@@ -4,7 +4,6 @@
 # Written by Bin Xiao (Bin.Xiao@microsoft.com)
 # Modified by Xingyi Zhou
 # ------------------------------------------------------------------------------
-# python main.py ctdet --arch fatnet --dataset pascal --gpus 0,1 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --exp_id fatnet_pascal_384_daspp_ds4
 
 
 from __future__ import absolute_import
@@ -242,7 +241,7 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 16
+        in_channels = 3
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for ic, v in enumerate(cfg):
             v = v * 1

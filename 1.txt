@@ -1,3 +1,5 @@
 python main.py ctdet --exp_id pascal_vgg16_384_scratch --arch vgg_16 --dataset pascal --num_epochs 70 --lr_step 45,60 --batch_size 32
 
 python main.py ctdet --exp_id pascal_vgg16_384_scratch --arch vgg_16 --dataset pascal --num_epochs 70 --lr_step 45,60 --batch_size 32
+
+python main.py ctdet --arch fatnetfrn --dataset pascal --gpus 0,1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --down_ratio 1 --exp_id fatnet_frn_pascal_96_daspp
