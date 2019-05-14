@@ -1,0 +1,3 @@
+python main.py ctdet --exp_id pascal_vgg16_384_scratch --arch vgg_16 --dataset pascal --num_epochs 70 --lr_step 45,60 --batch_size 32
+
+python main.py ctdet --exp_id pascal_vgg16_384_scratch --arch vgg_16 --dataset pascal --num_epochs 70 --lr_step 45,60 --batch_size 32
