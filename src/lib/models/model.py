@@ -14,7 +14,7 @@ from .networks.resnet_dcn import get_pose_net as get_pose_net_dcn
 from .networks.large_hourglass import get_large_hourglass_net
 from .networks.vgg_dcn import get_pose_net as get_pose_net_vgg_dcn
 from .networks.fatnet import get_pose_net as get_pose_net_fatnet
-
+from .networks.fatnet_frn import get_pose_net as get_pose_net_fatnet_frn
 _model_factory = {
   'res': get_pose_net, # default Resnet with deconv
   'dlav0': get_dlav0, # default DLAup
@@ -23,6 +23,7 @@ _model_factory = {
   'hourglass': get_large_hourglass_net,
   'vgg': get_pose_net_vgg_dcn,
   'fatnet': get_pose_net_fatnet,
+  'fatnetfrn': get_pose_net_fatnet_frn,
 }
 
 def create_model(arch, heads, head_conv):

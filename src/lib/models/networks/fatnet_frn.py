@@ -256,10 +256,10 @@ class PosePangNet(nn.Module):
 
     def forward(self, x):
 
-        x = self.conv1(x)
-        x = F.max_pool2d(x, kernel_size=2, stride=2)
+        # x = self.conv1(x)
+        # x = F.max_pool2d(x, kernel_size=2, stride=2)
         # x = F.avg_pool2d(x, kernel_size=4, stride=4)
-        id = 0
+        # id = 0
         # for layer in self.features:
         #     id += 1
         #     if id == 4 or id == 8:
