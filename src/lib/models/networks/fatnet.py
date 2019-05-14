@@ -76,7 +76,6 @@ class Pang_unit_stride_mb(nn.Module):  #### basic unit
             BasicConv(cin, cin // groups, 1, 1, 0),
             BasicConv(cin // groups, cin // groups, kernel_size=9, stride=8, padding=1, bn=bn, bias=bias),
             BasicConv(cin // groups, cout, 1, 1, 0))
-
         self.branch54 = nn.Sequential(
             BasicConv(cin, cin // groups, 1, 1, 0),
             BasicConv(cin // groups, cin // groups, kernel_size=5, stride=4, padding=1, bn=bn, bias=bias),
@@ -122,17 +121,17 @@ class Pang_unit_stride(nn.Module):  #### basic unit
         #     bias = True
         bias = True
 
-        self.branch0 =  BasicConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias)
+        self.branch0 =  BasicConv(cin, cout, kernel_size=3, stride=2, padding=1, bn=bn, bias=bias)
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
 
     def forward(self, x):
         x0 = self.branch0(x)
-        # x0 = F.upsample_nearest(x0, scale_factor=2)
+        x0 = F.upsample_nearest(x0, scale_factor=2)
         x1 = self.branch1(x)
         if self.cin == self.cout:
-            x0 = x1 + x0
+            x0 = x1 + x0 + x
         else:
             x0 = x1 + x0
         return x0
@@ -174,7 +173,7 @@ class PosePangNet(nn.Module):
 
         super(PosePangNet, self).__init__()
 
-        self.conv1 = BasicConv(3, 64, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
+        self.conv1 = BasicConv(3, 16, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
         self.dense_aspp = dense_aspp()
@@ -241,10 +240,10 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 64
+        in_channels = 16
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for ic, v in enumerate(cfg):
-            v = v * 4
+            v = v * 1
             if ic <= 1:
                 layers.append(Pang_unit(in_channels, v, bn=batch_norm))
             else:
@@ -259,17 +258,20 @@ class PosePangNet(nn.Module):
         x = F.max_pool2d(x, kernel_size=2, stride=2)
         # x = F.avg_pool2d(x, kernel_size=4, stride=4)
         id = 0
-        for layer in self.features:
-            id += 1
-            if id == 4 or id == 8:
-                x = F.max_pool2d(x, kernel_size=2, stride=2)
-                x = layer(x)
-            else:
-                x = layer(x)
+        # for layer in self.features:
+        #     id += 1
+        #     if id == 4 or id == 8:
+        #         x = F.max_pool2d(x, kernel_size=2, stride=2)
+        #         x = layer(x)
+        #     else:
+        #         x = layer(x)
 
-        x = F.max_pool2d(x, kernel_size=2, stride=2)
-        # x = self.dense_aspp(x)
-        x = self.dcn(x)
+        for layer in self.features:
+            x = layer(x)
+
+        # x = F.max_pool2d(x, kernel_size=2, stride=2)
+        x = self.dense_aspp(x)
+        # x = self.dcn(x)
 
         # x = self.conv1(x)
         # x = self.bn1(x)
