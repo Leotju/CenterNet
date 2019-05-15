@@ -17,7 +17,7 @@ from .networks.fatnet import get_pose_net as get_pose_net_fatnet
 from .networks.fatnet_frn import get_pose_net as get_pose_net_fatnet_frn
 from .networks.fatnet_daspp_dcn import get_pose_net as get_pose_net_fatnet_daspp_dcn
 from .networks.fatnet_frn_dla import get_pose_net as get_pose_net_fatnet_frn_dla_daspp
-
+from .networks.fatnet_frn_mb_daspp_dcn import get_pose_net as get_pose_net_fatnet_frn_mb_daspp_dcn
 _model_factory = {
   'res': get_pose_net, # default Resnet with deconv
   'dlav0': get_dlav0, # default DLAup
@@ -29,6 +29,8 @@ _model_factory = {
   'fatnetfrn': get_pose_net_fatnet_frn,
   'fatnetfrndladaspp': get_pose_net_fatnet_frn_dla_daspp,
   'fatnetdasppdcn':get_pose_net_fatnet_daspp_dcn,
+  'fatnetfrnmbdasppdcn':get_pose_net_fatnet_frn_mb_daspp_dcn,
+
 
 }
 
