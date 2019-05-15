@@ -149,15 +149,14 @@ class PosePangNet(nn.Module):
         self.dcn = nn.Sequential(
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            nn.UpsamplingBilinear2d(scale_factor=2),
+
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
             DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            nn.UpsamplingBilinear2d(scale_factor=2),
+
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
             DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            nn.UpsamplingBilinear2d(scale_factor=2),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
 
