@@ -1,1 +1,1 @@
-python main.py ctdet --arch fatnetfrndladaspp --dataset pascal --gpus 0 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --exp_id fatnet_frn_pascal_96_daspp_d2
+python main.py ctdet --arch fatnetfrndladaspp --dataset pascal --gpus 0 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --exp_id fatnet_frn_pascal_96_daspp_d2
