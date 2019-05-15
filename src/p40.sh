@@ -1,1 +1,4 @@
-python main.py ctdet --arch fatnetfrndladaspp --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --exp_id fatnet_frn_pascal_96_daspp_d2
+python main.py ctdet --arch fatnetdasppdcndla --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla
+
+
+python test.py ctdet --arch fatnetdasppdcndla --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --exp_id fatnet_pascal_384_daspp_dcn_ds4 --resume
