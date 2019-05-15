@@ -91,7 +91,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
 
 class Pang_unit_stride_d2(nn.Module):  #### basic unit
     def __init__(self, cin, cout, bn):
-        super(Pang_unit_stride, self).__init__()
+        super(Pang_unit_stride_d2, self).__init__()
         # if bn==True:
         #     bias = False
         # else:
