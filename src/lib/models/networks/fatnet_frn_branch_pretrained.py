@@ -101,11 +101,14 @@ class PosePangNet(nn.Module):
                 x1 = x1 + x2
                 x = layer(torch.cat((x, x1), 1))
             id += 1
-        print(x.max())
+
         x = self.dsapp(x)
         x = self.dcn(x)
 
-        return x
+        ret = {}
+        for head in self.heads:
+            ret[head] = self.__getattr__(head)(x)
+        return [ret]
 
     def init_weights(self, num_layers, pretrained=True):
         # if pretrained:
