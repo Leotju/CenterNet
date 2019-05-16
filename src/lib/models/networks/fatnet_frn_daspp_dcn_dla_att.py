@@ -290,7 +290,7 @@ class PosePangNet(nn.Module):
         x = self.dense_aspp(x)
         x = self.dcn(x)
 
-        x = self.pam(x) + self.cam(x)
+        x = self.pam(x)
 
         # x = self.conv1(x)
         # x = self.bn1(x)
