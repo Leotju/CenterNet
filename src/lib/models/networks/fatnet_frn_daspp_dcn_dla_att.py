@@ -212,11 +212,11 @@ class PosePangNet(nn.Module):
 
 
 
-        self.pam = nn.Sequential(
-            BasicConv(64, 8, kernel_size=1, stride=1, padding=0),
-            PAM_Module(in_dim=8),
-            BasicConv(8, 64, kernel_size=1, stride=1, padding=0),
-        )
+        # self.pam = nn.Sequential(
+        #     BasicConv(64, 8, kernel_size=1, stride=1, padding=0),
+        #     PAM_Module(in_dim=8),
+        #     BasicConv(8, 64, kernel_size=1, stride=1, padding=0),
+        # )
         self.cam = nn.Sequential(
             BasicConv(64, 8, kernel_size=1, stride=1, padding=0),
             CAM_Module(in_dim=8),
@@ -290,7 +290,7 @@ class PosePangNet(nn.Module):
         x = self.dense_aspp(x)
         x = self.dcn(x)
 
-        x = self.pam(x)
+        x = self.cam(x)
 
         # x = self.conv1(x)
         # x = self.bn1(x)
