@@ -213,14 +213,14 @@ class PosePangNet(nn.Module):
 
 
         self.pam = nn.Sequential(
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            BasicConv(64, 64, kernel_size=1, stride=1, padding=0),
             PAM_Module(in_dim=64),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            BasicConv(64, 64, kernel_size=1, stride=1, padding=0),
         )
         self.cam = nn.Sequential(
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            BasicConv(64, 64, kernel_size=1, stride=1, padding=0),
             CAM_Module(in_dim=64),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            BasicConv(64, 64, kernel_size=1, stride=1, padding=0),
         )
 
         for head in sorted(self.heads):
