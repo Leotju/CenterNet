@@ -11,4 +11,6 @@ python test.py ctdet --arch fatnetfrnpre --dataset pascal --gpus 2,3 --down_rati
 python test.py ctdet --arch fatnetdasppdcndla --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla --resume
 
 python main.py ctdet --arch fatnetfrndladasppdcnatt --dataset pascal --gpus 2,3 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-2 --exp_id fatnet_frn_pascal_96_daspp_dcn_dla_att_lr100x
+python test.py ctdet --arch fatnetfrndladasppdcnatt --dataset pascal --gpus 2,3 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-2 --exp_id fatnet_frn_pascal_96_daspp_dcn_dla_att_lr100x --resume
 
+python main.py ctdet --arch fatnetfrndladasppdcnlk --dataset pascal --gpus 2,3 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_pascal_96_daspp_dcn_dla_att_lr10x

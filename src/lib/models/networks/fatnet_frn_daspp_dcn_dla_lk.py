@@ -155,7 +155,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
+                    BasicConv(64, head_conv, kernel_size=9, padding=4, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
 
@@ -174,7 +174,7 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 3
+        in_channels = 16
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for ic, v in enumerate(cfg):
             v = v * 1

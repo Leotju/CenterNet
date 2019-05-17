@@ -14,15 +14,19 @@ from .networks.resnet_dcn import get_pose_net as get_pose_net_dcn
 from .networks.large_hourglass import get_large_hourglass_net
 from .networks.vgg_dcn import get_pose_net as get_pose_net_vgg_dcn
 from .networks.fatnet import get_pose_net as get_pose_net_fatnet
-from .networks.fatnet_frn import get_pose_net as get_pose_net_fatnet_frn
-from .networks.fatnet_daspp_dcn import get_pose_net as get_pose_net_fatnet_daspp_dcn
+
 from .networks.fatnet_frn_dla import get_pose_net as get_pose_net_fatnet_frn_dla_daspp
 from .networks.fatnet_frn_mb_daspp_dcn import get_pose_net as get_pose_net_fatnet_frn_mb_daspp_dcn
-from .networks.fatnet_daspp_dcn_dla import get_pose_net as get_pose_net_fatnet_daspp_dcn_dla
 from .networks.fatnet_frn_daspp_dcn_dla import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla
 from .networks.fatnet_frn_daspp_dcn_dla_att import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_att
 from .networks.fatnet_frn_branch_pretrained import get_pose_net as get_pose_net_fatnet_frn_branch_daspp_dcn_pretrained
+from .networks.fatnet_frn_daspp_dcn_dla_lk import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk
+
+from .networks.fatnet_frn import get_pose_net as get_pose_net_fatnet_frn
+from .networks.fatnet_daspp_dcn import get_pose_net as get_pose_net_fatnet_daspp_dcn
+from .networks.fatnet_daspp_dcn_dla import get_pose_net as get_pose_net_fatnet_daspp_dcn_dla
 from .networks.fatnet_daspp_dcn_dla_lk import get_pose_net as get_pose_net_fatnet_daspp_dcn_dla_lk
+
 _model_factory = {
     'res': get_pose_net,  # default Resnet with deconv
     'dlav0': get_dlav0,  # default DLAup
@@ -31,15 +35,19 @@ _model_factory = {
     'hourglass': get_large_hourglass_net,
     'vgg': get_pose_net_vgg_dcn,
     'fatnet': get_pose_net_fatnet,
+    'fatnetdasppdcn': get_pose_net_fatnet_daspp_dcn,
+    'fatnetdasppdcndla': get_pose_net_fatnet_daspp_dcn_dla,
+    'fatnetdasppdcndlalk': get_pose_net_fatnet_daspp_dcn_dla_lk,
+
     'fatnetfrn': get_pose_net_fatnet_frn,
     'fatnetfrndladaspp': get_pose_net_fatnet_frn_dla_daspp,
-    'fatnetdasppdcn': get_pose_net_fatnet_daspp_dcn,
     'fatnetfrnmbdasppdcn': get_pose_net_fatnet_frn_mb_daspp_dcn,
-    'fatnetdasppdcndla': get_pose_net_fatnet_daspp_dcn_dla,
     'fatnetfrndladasppdcn':get_pose_net_fatnet_frn_daspp_dcn_dla,
+    'fatnetfrndladasppdcnlk':get_pose_net_fatnet_frn_daspp_dcn_dla_lk,
+
     'fatnetfrndladasppdcnatt':get_pose_net_fatnet_frn_daspp_dcn_dla_att,
     'fatnetfrnpre': get_pose_net_fatnet_frn_branch_daspp_dcn_pretrained,
-    'fatnetdasppdcndlalk':get_pose_net_fatnet_daspp_dcn_dla_lk,
+
 }
 
 
