@@ -42,6 +42,26 @@ class BasicConv(nn.Module):
         return x
 
 ########
+# SE module
+class SE_Module(nn.Module):
+
+    def __init__(self,cin):
+        super(SE_Module, self).__init__()
+        # self.glp =
+        self.fc0 = BasicConv(cin,cin//2,kernel_size=1,stride=1,padding=0,bn=False,relu=True,bias=True)
+        self.fc1 = BasicConv(cin//2,cin,kernel_size=1,stride=1,padding=0,bn=False,relu=False,bias=True)
+
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+
+        x0 = F.adaptive_avg_pool2d(x, 1)
+        x0 = self.fc0(x0)
+        x0 = self.fc1(x0)
+        x0 = self.sigmoid(x0)
+
+        return x0
+
 
 class Pang_unit(nn.Module):  #### basic unit
     def __init__(self, cin, cout, bn):
@@ -91,6 +111,37 @@ class Pang_unit_stride(nn.Module):  #### basic unit
             x0 = x1 + x0
         return x0
 
+
+class Pang_unit_stride_se(nn.Module):  #### basic unit
+    def __init__(self, cin, cout, bn, dilation):
+        super(Pang_unit_stride_se, self).__init__()
+        # if bn==True:
+        #     bias = False
+        # else:
+        #     bias = True
+        bias = True
+
+        self.branch0 = BasicConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
+                                 bias=bias)
+
+        self.se0 = SE_Module(cout)
+
+        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.cin = cin
+        self.cout = cout
+
+    def forward(self, x):
+        x0 = self.branch0(x)
+        x_se = self.se0(x0)
+        x0 = torch.mul(x0,x_se)
+
+        x0 = F.upsample_nearest(x0, scale_factor=2)
+        x1 = self.branch1(x)
+        if self.cin == self.cout:
+            x0 = x1 + x0 + x
+        else:
+            x0 = x1 + x0
+        return x0
 
 class dense_aspp(nn.Module):
     def __init__(self):
@@ -182,11 +233,11 @@ class PosePangNet(nn.Module):
             if ic <= 1:
                 layers.append(Pang_unit(in_channels, v, bn=batch_norm))
             elif ic > 1 and ic <= 5:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=1))
+                layers.append(Pang_unit_stride_se(in_channels, v, bn=batch_norm, dilation=1))
             elif ic > 5 and ic <= 9:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=2))
+                layers.append(Pang_unit_stride_se(in_channels, v, bn=batch_norm, dilation=2))
             else:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=4))
+                layers.append(Pang_unit_stride_se(in_channels, v, bn=batch_norm, dilation=4))
             in_channels = v
         return layers
 

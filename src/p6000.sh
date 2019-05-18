@@ -15,8 +15,14 @@ python main.py ctdet --arch fatnetdasppdcndlalk --dataset pascal --gpus 0,1 --do
 python test.py ctdet --arch fatnetdasppdcndlalk --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_lr_10x --resume
 
 
+
 p40 123
+python main.py ctdet --arch fatnetdasppdcndlalk416 --dataset pascal --gpus 2,3 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_416_lr_10x
+
+
 p6000 123
+python main.py ctdet --arch fatnetdasppdcndlalkdr --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_dr_lr_10x
+
 vpa hello
 
 screen -r
