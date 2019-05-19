@@ -25,6 +25,11 @@ p6000 123
 python main.py ctdet --arch fatnetdasppdcndlalkdr --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_dr_lr_10x
 python test.py ctdet --arch fatnetdasppdcndlalkdr --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_dr_lr_10x
 
+
+python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id resnet_18_dcn_lr_10x
+
+
+
 vpa hello
 python main.py ctdet --arch fatnetdasppdcndlalkse --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_se_lr_10x
 python test.py ctdet --arch fatnetdasppdcndlalkse --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_pascal_384_daspp_dcn_ds4_dla_lk_se_lr_10x --resume

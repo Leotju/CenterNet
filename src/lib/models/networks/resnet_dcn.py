@@ -264,10 +264,10 @@ class PoseResNet(nn.Module):
 
     def init_weights(self, num_layers):
         if 1:
-            url = model_urls['resnet{}'.format(num_layers)]
-            pretrained_state_dict = model_zoo.load_url(url)
-            print('=> loading pretrained model {}'.format(url))
-            self.load_state_dict(pretrained_state_dict, strict=False)
+            # url = model_urls['resnet{}'.format(num_layers)]
+            # pretrained_state_dict = model_zoo.load_url(url)
+            # print('=> loading pretrained model {}'.format(url))
+            # self.load_state_dict(pretrained_state_dict, strict=False)
             print('=> init deconv weights from normal distribution')
             for name, m in self.deconv_layers.named_modules():
                 if isinstance(m, nn.BatchNorm2d):
