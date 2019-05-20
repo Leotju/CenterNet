@@ -179,11 +179,7 @@ class PosePangNet(nn.Module):
 
         super(PosePangNet, self).__init__()
 
-        self.conv1 = nn.Sequential(
-            BasicConv(3, 16, kernel_size=7, stride=1, padding=3, bias=False, bn=True, relu=True),
-            BasicConv(16, 16, kernel_size=7, stride=1, padding=3, bias=False, bn=True, relu=True),
-            BasicConv(16, 16, kernel_size=7, stride=1, padding=3, bias=False, bn=True, relu=True),
-        )
+        self.conv1 = BasicConv(3, 16, kernel_size=7, stride=1, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
         self.dense_aspp = dense_aspp()
