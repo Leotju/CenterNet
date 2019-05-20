@@ -41,3 +41,6 @@ python test.py ctdet --arch fatnetfrndasppdcndlalk416dr --dataset pascal --gpus 
 
 
 python main.py ctdet --arch fatnetfrndasppdcndlalk416se37 --dataset pascal --gpus 0,1,2,3,4,5,6,7 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_pascal_192_daspp_dcn_ds4_dla_lk_416_se_37_lr_10x
+python test.py ctdet --arch fatnetfrndasppdcndlalk416se37 --dataset pascal --gpus 0,1,2,3,4,5,6,7 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_pascal_192_daspp_dcn_ds4_dla_lk_416_se_37_lr_10x --resume
+
+python main.py ctdet --arch fatnetfrndasppdcndlalk416se --dataset pascal --gpus 0,1,2,3,4,5,6,7 --wh_weight 0.02 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_pascal_192_daspp_dcn_ds4_dla_lk_416_se_lr_10x_wh_002

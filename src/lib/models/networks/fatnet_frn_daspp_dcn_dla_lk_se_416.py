@@ -211,8 +211,6 @@ class PosePangNet(nn.Module):
                     BasicConv(64, head_conv, kernel_size=9, padding=4, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
-
-
             else:
                 fc = nn.Conv2d(
                     in_channels=128,
