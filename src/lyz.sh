@@ -7,3 +7,7 @@ python test.py ctdet --arch fatnetfrndladasppdcnlk --wh_weight 0.2 --dataset pas
 
 
 python main.py ctdet --arch vgg_16 --exp_id coco_vgg_384 --batch_size 128 --lr 5e-4 --gpus 0,1 --num_workers 16 --val_intervals 10 --input_res 384
+
+python main.py ctdet --arch resdcn_18 --exp_id coco_res18_384 --batch_size 128 --lr 5e-4 --gpus 0,1 --num_workers 16 --val_intervals 10 --input_res 384
+
+python main.py ctdet --arch vgg_16 --exp_id coco_vgg_384 --batch_size 32 --lr 5e-4 --gpus 0,1 --num_workers 16 --val_intervals 10 --input_res 384
