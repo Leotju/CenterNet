@@ -21,7 +21,7 @@ class COCO2014(data.Dataset):
   def __init__(self, opt, split):
     super(COCO2014, self).__init__()
     self.data_dir = os.path.join(opt.data_dir, 'coco')
-    self.img_dir = os.path.join(self.data_dir, '{}2014'.format(split))
+    self.img_dir = os.path.join(self.data_dir, 'images', '{}2014'.format(split))
     if split == 'test':
       self.annot_path = os.path.join(
           self.data_dir, 'annotations', 
