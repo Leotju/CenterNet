@@ -6,7 +6,8 @@ OUT_PATH = ANNOT_PATH
 INPUT_FILES = ['pascal_train2012.json', 'pascal_val2012.json',
                'pascal_train2007.json', 'pascal_val2007.json']
 OUTPUT_FILE = 'pascal_trainval0712.json'
-KEYS = ['images', 'type', 'annotations', 'categories']
+# KEYS = ['images', 'type', 'annotations', 'categories']
+KEYS = ['info', 'images', 'licenses', 'annotations', 'categories']
 MERGE_KEYS = ['images', 'annotations']
 
 out = {}

@@ -5,7 +5,8 @@ ANNOT_PATH = '../../data/coco/annotations/'
 OUT_PATH = ANNOT_PATH
 INPUT_FILES = ['instances_train2014.json', 'instances_valminusminival2014.json']
 OUTPUT_FILE = 'instances_train2014_new.json'
-KEYS = ['images', 'type', 'annotations', 'categories']
+# KEYS = ['images', 'type', 'annotations', 'categories']
+KEYS = ['info', 'images', 'licenses', 'annotations', 'categories']
 MERGE_KEYS = ['images', 'annotations']
 
 out = {}
