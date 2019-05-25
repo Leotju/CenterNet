@@ -58,10 +58,8 @@ class Pang_unit(nn.Module):  #### basic unit
     def forward(self, x):
         x0 = self.branch0(x)
         x1 = self.branch1(x)
-        if self.cin == self.cout:
-            x0 = x0 + x1 + x
-        else:
-            x0 = x0 + x1
+
+        x0 = x0 + x1
         return x0
 
 
@@ -84,10 +82,8 @@ class Pang_unit_stride(nn.Module):  #### basic unit
         x0 = self.branch0(x)
         x0 = F.upsample_nearest(x0, scale_factor=2)
         x1 = self.branch1(x)
-        if self.cin == self.cout:
-            x0 = x1 + x0 + x
-        else:
-            x0 = x1 + x0
+
+        x0 = x1 + x0
         return x0
 
 class PosePangNet(nn.Module):
@@ -103,6 +99,12 @@ class PosePangNet(nn.Module):
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            # DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            # nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            # BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            # DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            # nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            # BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
 
         for head in sorted(self.heads):

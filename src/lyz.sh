@@ -28,3 +28,5 @@ python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --
 
 
 python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --exp_id fatnet_frn_pascal_96_daspp_dcn_pre_wh_002_lk
+
+python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --exp_id fatnet_frn_pascal_96_daspp_3dcn_pre_wh_002_lk
