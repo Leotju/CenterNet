@@ -138,9 +138,10 @@ class PosePangNet(nn.Module):
 
         # self.final_layer = nn.ModuleList(self.final_layer)
 
-    def _make_layers_pangnet(cfg, batch_norm=False):
+    def _make_layers_pangnet(self, batch_norm=False):
         layers = nn.ModuleList()
         in_channels = 3
+        cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for idx, v in enumerate(cfg):
             if idx <= 3:
                 layers.append(Pang_unit(in_channels, v, bn=batch_norm))
@@ -167,11 +168,11 @@ class PosePangNet(nn.Module):
 
     def init_weights(self, num_layers, pretrained=True):
         # if pretrained:
-
+        print('=> init from pretrianed')
         checkpoint = torch.load('../models/best.pangnet.2019-05-16-5956.pth.tar')
         self.load_state_dict(checkpoint['state_dict'], strict=False)
 
-        # print('=> init resnet deconv weights from normal distribution')
+
 
         print('=> init final conv weights from normal distribution')
         for head in self.heads:
