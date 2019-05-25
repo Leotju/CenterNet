@@ -7,7 +7,18 @@ python test.py ctdet --arch fatnetfrndladasppdcnlk --wh_weight 0.2 --dataset pas
 
 
 python main.py ctdet --arch vgg_16 --exp_id coco_vgg_384 --batch_size 128 --lr 5e-4 --gpus 0,1,2,3 --num_workers 16 --val_intervals 10 --input_res 384
+python test.py ctdet --arch vgg_16 --dataset coco2014 --exp_id coco_vgg_384 --input_res 384 --resume
+python demo.py ctdet --arch vgg_16 --dataset coco2014 --exp_id coco_vgg_384 --input_res 384 --resume --demo 'webcam'
+
+
 
 python main.py ctdet --arch resdcn_18 --exp_id coco_res18_384 --batch_size 128 --lr 5e-4 --gpus 0,1 --num_workers 16 --val_intervals 10 --input_res 384
 python test.py ctdet --arch resdcn_18 --exp_id coco_res18_384 --batch_size 128 --lr 5e-4 --gpus 0,1 --num_workers 16 --val_intervals 10 --input_res 384 --resume
+python test.py ctdet --arch resdcn_18 --dataset coco2014 --exp_id coco_res18_384 --lr 5e-4 --gpus 0 --num_workers 16 --val_intervals 10 --input_res 384 --resume
+python test.py ctdet --arch resdcn_18 --dataset coco2014 --exp_id coco_vgg_384 --load_model  /home/leo/Downloads/ctdet_coco_resdcn18.pth
 
+python test.py ctdet --arch resdcn_18 --dataset coco2014 --exp_id coco_res18_384 --input_res 384 --resume
+
+
+
+python demo.py ctdet --arch fatnetfrndladasppdcn --dataset pascal --down_ratio 1 --input_res 192 --exp_id fatnet_frn_pascal_192_daspp_dcn_dla --resume --demo 'webcam'

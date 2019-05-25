@@ -79,6 +79,8 @@ class Pang_unit_stride(nn.Module):  #### basic unit
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
+        self.smooth = BasicConv(2, 1, kernel_size=7, stride=1, padding=3, bn=bn, bias=bias)
+
 
     def forward(self, x):
         x0 = self.branch0(x)
@@ -88,34 +90,14 @@ class Pang_unit_stride(nn.Module):  #### basic unit
             x0 = x1 + x0 + x
         else:
             x0 = x1 + x0
+
+        x_mean = x0.mean(1)[:, None, :, :]
+        x_max = x0.max(1)[0][:, None, :, :]
+
+        smooth = self.smooth(torch.cat((x_max, x_mean), 1))
+        x0 = x0 * smooth.sigmoid()
+
         return x0
-
-
-class dense_aspp(nn.Module):
-    def __init__(self):
-        super(dense_aspp, self).__init__()
-        bias = True
-        bn = True
-        # self.conv1  =
-        self.conv_d3 = BasicConv(128, 24, kernel_size=3, stride=1, padding=3, dilation=3, bn=bn, bias=bias)
-        self.conv_d6 = BasicConv(128 + 24, 24, kernel_size=3, stride=1, padding=6, dilation=6, bn=bn, bias=bias)
-        self.conv_d12 = BasicConv(128 + 48, 24, kernel_size=3, stride=1, padding=12, dilation=12, bn=bn, bias=bias)
-        self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
-        self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
-
-        self.trans = BasicConv(128 + 120, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
-
-    def forward(self, x):
-        d3 = self.conv_d3(x)
-        d6 = self.conv_d6(torch.cat((x, d3), 1))
-        # d9 = self.conv_d9(torch.cat((x, d3, d6), 1))
-        d12 = self.conv_d12(torch.cat((x, d3, d6), 1))
-        d18 = self.conv_d18(torch.cat((x, d3, d6, d12), 1))
-        d24 = self.conv_d24(torch.cat((x, d3, d6, d12, d18), 1))
-        out = self.trans(torch.cat((x, d3, d6, d12, d18, d24), 1))
-
-        return out
-
 
 class PosePangNet(nn.Module):
 
@@ -129,18 +111,18 @@ class PosePangNet(nn.Module):
         self.conv1 = BasicConv(3, 16, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
-        self.dense_aspp = dense_aspp()
+
 
         self.dcn = nn.Sequential(
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            # BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            # DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            # nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            # BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            # DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            # nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            # BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
 
         for head in sorted(self.heads):
@@ -203,19 +185,19 @@ class PosePangNet(nn.Module):
         #     else:
         #         x = layer(x)
 
-        # for layer in self.features:
-        #     x = layer(x)
-
-        idx = [1, 3, 6, 9, 12]
-        for i, layer in enumerate(self.features):
-            print(i)
+        for layer in self.features:
             x = layer(x)
-            if i in idx:
-                import numpy as np
-                np.save('/home/leo/Pictures/frn/' + str(i) + '.npy', x.cpu().numpy())
+
+        # idx = [1, 3, 6, 9, 12]
+        # for i, layer in enumerate(self.features):
+        #     print(i)
+        #     x = layer(x)
+        #     if i in idx:
+        #         import numpy as np
+        #         np.save('/home/leo/Pictures/frn/' + str(i) + '.npy', x.cpu().numpy())
 
         # x = F.max_pool2d(x, kernel_size=2, stride=2)
-        x = self.dense_aspp(x)
+
         x = self.dcn(x)
 
         # x = self.conv1(x)

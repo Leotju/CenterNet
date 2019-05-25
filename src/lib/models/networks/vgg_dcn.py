@@ -170,7 +170,13 @@ class PoseVGGNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.features(x)
+        idx = [6, 13, 23, 33, 43]
+        for i, layer in enumerate(self.features):
+            x = layer(x)
+            if i in idx:
+                import numpy as np
+                np.save('/home/leo/Pictures/3/vgg/' + str(i) + '.npy', x.cpu().numpy())
+        # x = self.features(x)
 
         x = self.deconv_layers(x)
         ret = {}

@@ -90,33 +90,6 @@ class Pang_unit_stride(nn.Module):  #### basic unit
             x0 = x1 + x0
         return x0
 
-
-class dense_aspp(nn.Module):
-    def __init__(self):
-        super(dense_aspp, self).__init__()
-        bias = True
-        bn = True
-        # self.conv1  =
-        self.conv_d3 = BasicConv(128, 24, kernel_size=3, stride=1, padding=3, dilation=3, bn=bn, bias=bias)
-        self.conv_d6 = BasicConv(128 + 24, 24, kernel_size=3, stride=1, padding=6, dilation=6, bn=bn, bias=bias)
-        self.conv_d12 = BasicConv(128 + 48, 24, kernel_size=3, stride=1, padding=12, dilation=12, bn=bn, bias=bias)
-        self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
-        self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
-
-        self.trans = BasicConv(128 + 120, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
-
-    def forward(self, x):
-        d3 = self.conv_d3(x)
-        d6 = self.conv_d6(torch.cat((x, d3), 1))
-        # d9 = self.conv_d9(torch.cat((x, d3, d6), 1))
-        d12 = self.conv_d12(torch.cat((x, d3, d6), 1))
-        d18 = self.conv_d18(torch.cat((x, d3, d6, d12), 1))
-        d24 = self.conv_d24(torch.cat((x, d3, d6, d12, d18), 1))
-        out = self.trans(torch.cat((x, d3, d6, d12, d18, d24), 1))
-
-        return out
-
-
 class PosePangNet(nn.Module):
 
     def __init__(self, heads, head_conv, **kwargs):
@@ -129,16 +102,9 @@ class PosePangNet(nn.Module):
         self.conv1 = BasicConv(3, 16, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
-        self.dense_aspp = dense_aspp()
 
         self.dcn = nn.Sequential(
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
@@ -172,17 +138,15 @@ class PosePangNet(nn.Module):
 
         # self.final_layer = nn.ModuleList(self.final_layer)
 
-    def _make_layers_pangnet(self, batch_norm=True):
+    def _make_layers_pangnet(cfg, batch_norm=False):
         layers = nn.ModuleList()
         in_channels = 3
-        cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
-        for ic, v in enumerate(cfg):
-            v = v * 1
-            if ic <= 1:
+        for idx, v in enumerate(cfg):
+            if idx <= 3:
                 layers.append(Pang_unit(in_channels, v, bn=batch_norm))
-            elif ic > 1 and ic <= 5:
+            elif idx > 3 and idx <= 5:
                 layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=1))
-            elif ic > 5 and ic <= 9:
+            elif idx > 5 and idx <= 9:
                 layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=2))
             else:
                 layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=4))
@@ -191,44 +155,11 @@ class PosePangNet(nn.Module):
 
     def forward(self, x):
 
-        # x = self.conv1(x)
-        # x = F.max_pool2d(x, kernel_size=2, stride=2)
-        # x = F.avg_pool2d(x, kernel_size=4, stride=4)
-
-        # for layer in self.features:
-        #     id += 1
-        #     if id == 4 or id == 8:
-        #         x = F.max_pool2d(x, kernel_size=2, stride=2)
-        #         x = layer(x)
-        #     else:
-        #         x = layer(x)
-
-        # for layer in self.features:
-        #     x = layer(x)
-
-        idx = [1, 3, 6, 9, 12]
-        for i, layer in enumerate(self.features):
-            print(i)
+        for layer in self.features:
             x = layer(x)
-            if i in idx:
-                import numpy as np
-                np.save('/home/leo/Pictures/frn/' + str(i) + '.npy', x.cpu().numpy())
 
-        # x = F.max_pool2d(x, kernel_size=2, stride=2)
-        x = self.dense_aspp(x)
         x = self.dcn(x)
 
-        # x = self.conv1(x)
-        # x = self.bn1(x)
-        # x = self.relu(x)
-        # x = self.maxpool(x)
-
-        # x = self.layer1(x)
-        # x = self.layer2(x)
-        # x = self.layer3(x)
-        # x = self.layer4(x)
-        #
-        # x = self.deconv_layers(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
@@ -236,9 +167,13 @@ class PosePangNet(nn.Module):
 
     def init_weights(self, num_layers, pretrained=True):
         # if pretrained:
+
+        checkpoint = torch.load('../models/best.pangnet.2019-05-16-5956.pth.tar')
+        self.load_state_dict(checkpoint['state_dict'], strict=False)
+
         # print('=> init resnet deconv weights from normal distribution')
 
-        # print('=> init final conv weights from normal distribution')
+        print('=> init final conv weights from normal distribution')
         for head in self.heads:
             final_layer = self.__getattr__(head)
             for i, m in enumerate(final_layer.modules()):

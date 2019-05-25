@@ -44,7 +44,7 @@ class opts(object):
                              help='random seed') # from CornerNet
 
     # log
-    self.parser.add_argument('--print_iter', type=int, default=0, 
+    self.parser.add_argument('--print_iter', type=int, default=10,
                              help='disable progress bar and print to screen.')
     self.parser.add_argument('--hide_data_time', action='store_true',
                              help='not display time during training.')
