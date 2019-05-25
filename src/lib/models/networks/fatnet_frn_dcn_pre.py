@@ -169,8 +169,8 @@ class PosePangNet(nn.Module):
     def init_weights(self, num_layers, pretrained=True):
         # if pretrained:
         print('=> init from pretrianed')
-        checkpoint = torch.load('../models/best.pangnet.2019-05-16-5956.pth.tar')
-        self.load_state_dict(checkpoint['state_dict'], strict=False)
+        checkpoint = torch.load('../models/pangnet.pth')
+        self.load_state_dict(checkpoint, strict=True)
 
 
 
