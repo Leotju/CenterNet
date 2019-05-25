@@ -98,11 +98,7 @@ class PosePangNet(nn.Module):
         self.heads = heads
 
         super(PosePangNet, self).__init__()
-
-        self.conv1 = BasicConv(3, 16, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
-
         self.features = self._make_layers_pangnet(batch_norm=True)
-
         self.dcn = nn.Sequential(
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
@@ -121,7 +117,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
+                    BasicConv(64, head_conv, kernel_size=9, padding=4, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
 

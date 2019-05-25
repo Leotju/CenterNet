@@ -24,4 +24,7 @@ python test.py ctdet --arch resdcn_18 --dataset coco2014 --exp_id coco_res18_384
 python demo.py ctdet --arch fatnetfrndladasppdcn --dataset pascal --down_ratio 1 --input_res 192 --exp_id fatnet_frn_pascal_192_daspp_dcn_dla --resume --demo 'webcam'
 
 
-python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --batch_size 32  --exp_id fatnet_frn_pascal_96_daspp_dcn_pre_wh_002
+python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --exp_id fatnet_frn_pascal_96_daspp_dcn_pre_wh_002
+
+
+python main.py ctdet --arch fatnetfrndcnpre --wh_weight 0.02 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --exp_id fatnet_frn_pascal_96_daspp_dcn_pre_wh_002_lk
