@@ -170,7 +170,7 @@ class PosePangNet(nn.Module):
         # if pretrained:
         print('=> init from pretrianed')
         checkpoint = torch.load('../models/pangnet.pth')
-        self.load_state_dict(checkpoint, strict=True)
+        self.load_state_dict(checkpoint, strict=False)
 
 
 
