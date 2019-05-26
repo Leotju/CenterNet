@@ -26,6 +26,7 @@ from .networks.fatnet_frn_daspp_dcn_dla_lk_se_416 import get_pose_net as get_pos
 from .networks.fatnet_frn_daspp_dcn_dla_lk_se_416_37 import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416_37
 from .networks.fatnet_frn_dcn_dla import get_pose_net as get_pose_net_frn_dcn_dla_smooth
 from .networks.fatnet_frn_dcn_pre import get_pose_net as get_pose_net_frn_dcn_pre
+from .networks.fatnet_frn_3dcn_pre import get_pose_net as get_pose_net_frn_3dcn_pre
 
 from .networks.fatnet_frn import get_pose_net as get_pose_net_fatnet_frn
 from .networks.fatnet_daspp_dcn import get_pose_net as get_pose_net_fatnet_daspp_dcn
@@ -67,6 +68,7 @@ _model_factory = {
     'fatnetfrnpre': get_pose_net_fatnet_frn_branch_daspp_dcn_pretrained,
 
     'fatnetfrndcnpre': get_pose_net_frn_dcn_pre,
+    'fatnetfrn3dcnpre': get_pose_net_frn_3dcn_pre,
 
 
 }
