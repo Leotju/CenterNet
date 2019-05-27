@@ -285,13 +285,13 @@ class PosePangNet(nn.Module):
         # for layer in self.features:
         #     x = layer(x)
 
-        idx = [5, 8, 10, 13, 16]
+        # idx = [5, 8, 10, 13, 16]
         for i, layer in enumerate(self.features):
-            print(i)
+        #     print(i)
             x = layer(x)
-            if i in idx:
-                import numpy as np
-                np.save('/home/leo/Pictures/3/frn/' + str(i) + '.npy', x.cpu().numpy())
+        #     if i in idx:
+        #         import numpy as np
+        #         np.save('/home/leo/Pictures/3/frn/' + str(i) + '.npy', x.cpu().numpy())
 
         # x = F.max_pool2d(x, kernel_size=2, stride=2)
         x = self.dense_aspp(x)
