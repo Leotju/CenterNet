@@ -14,6 +14,7 @@ from .networks.resnet_dcn import get_pose_net as get_pose_net_dcn
 from .networks.large_hourglass import get_large_hourglass_net
 from .networks.vgg_dcn import get_pose_net as get_pose_net_vgg_dcn
 from .networks.fatnet import get_pose_net as get_pose_net_fatnet
+from .networks.vgg_dla import get_pose_net as get_pose_net_vgg_dla
 
 from .networks.fatnet_frn_dla import get_pose_net as get_pose_net_fatnet_frn_dla_daspp
 from .networks.fatnet_frn_mb_daspp_dcn import get_pose_net as get_pose_net_fatnet_frn_mb_daspp_dcn
@@ -45,6 +46,9 @@ _model_factory = {
     'resdcn': get_pose_net_dcn,
     'hourglass': get_large_hourglass_net,
     'vgg': get_pose_net_vgg_dcn,
+    'vggdla': get_pose_net_vgg_dla,
+
+
     'fatnet': get_pose_net_fatnet,
     'fatnetdasppdcn': get_pose_net_fatnet_daspp_dcn,
     'fatnetdasppdcndla': get_pose_net_fatnet_daspp_dcn_dla,
