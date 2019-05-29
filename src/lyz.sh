@@ -11,6 +11,7 @@ python test.py ctdet --arch vgg_16 --dataset coco2014 --exp_id coco_vgg_384 --in
 python demo.py ctdet --arch vgg_16 --dataset coco2014 --exp_id coco_vgg_384 --input_res 384 --resume --demo 'webcam'
 
 python main.py ctdet --arch vggdla_16 --exp_id pascal_vggdla_384 --dataset pascal --gpus 0,1 --val_intervals 10 --input_res 384 --num_epochs 70 --lr_step 45,60
+python test.py ctdet --arch vggdla_16 --exp_id pascal_vggdla_384 --dataset pascal --gpus 0,1 --val_intervals 10 --input_res 384 --num_epochs 70 --lr_step 45,60 --resume
 
 python main.py ctdet --exp_id pascal_resdcn18_384 --arch resdcn_18 --dataset pascal --num_epochs 70 --lr_step 45,60
 

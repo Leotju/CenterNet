@@ -18,7 +18,8 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
-
+import cv2
+import numpy as np
 BN_MOMENTUM = 0.1
 
 
@@ -50,9 +51,9 @@ class ChannelAttention(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
 
-        self.fc1 = nn.Conv2d(in_planes, in_planes // 16, 1, bias=True)
+        self.fc1 = nn.Conv2d(in_planes, in_planes // 2, 1, bias=True)
         self.relu1 = nn.ReLU()
-        self.fc2 = nn.Conv2d(in_planes // 16, in_planes, 1, bias=True)
+        self.fc2 = nn.Conv2d(in_planes // 2, in_planes, 1, bias=True)
 
         self.sigmoid = nn.Sigmoid()
 
@@ -63,12 +64,12 @@ class ChannelAttention(nn.Module):
         return self.sigmoid(out)
 
 class SpatialAttention(nn.Module):
-    def __init__(self, kernel_size=7):
+    def __init__(self, kernel_size=21):
         super(SpatialAttention, self).__init__()
 
-        assert kernel_size in (3, 7), 'kernel size must be 3 or 7'
-        padding = 3 if kernel_size == 7 else 1
-
+        # assert kernel_size in (3, 7), 'kernel size must be 3 or 7'
+        # padding = 3 if kernel_size == 7 else 1
+        padding = kernel_size // 2
         self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=padding, bias=True)
         self.sigmoid = nn.Sigmoid()
 
@@ -167,8 +168,50 @@ class Pang_unit_stride_se(nn.Module):  #### basic unit
         else:
             x0 = x1 + x0
 
+        # x0 = self.sa(x0) * x0
+        # feats = x0.cpu().numpy()
+        # feats_max = feats[0, :, :, :].max(0)
+        # feats_norm = feats_max / feats.max() * 255
+        # feats_norm = feats_norm.astype(np.uint8)
+        # feats_norm = cv2.applyColorMap(feats_norm, cv2.COLORMAP_JET)
+        # cv2.imwrite('/home/leo/Pictures/5/before/' + str(self.cout) + '.png', feats_norm)
+
+
+
         x0 = self.ca(x0) * x0
+
+
+        #
+        # feats = x0.cpu().numpy()
+        # feats_max = feats[0, :, :, :].max(0)
+        # feats_norm = feats_max / feats.max() * 255
+        # feats_norm = feats_norm.astype(np.uint8)
+        # feats_norm = cv2.applyColorMap(feats_norm, cv2.COLORMAP_JET)
+        # cv2.imwrite('/home/leo/Pictures/5/ca/' + str(self.cout) + '.png', feats_norm)
+
         x0 = self.sa(x0) * x0
+        # sa = self.sa(x0)
+
+        # print(sa.max()[0] + sa.min())
+        # name = str(sa.max()[0] + sa.min())
+        #
+        # sa_norm =  sa.cpu().numpy()[0,0,:,:]
+        # sa_norm = (sa_norm - sa_norm.min()) / (sa_norm.max() - sa_norm.min() + 1e-6)
+        # sa_norm = (sa_norm * 255).astype(np.uint8)
+        # sa_norm = cv2.applyColorMap(sa_norm, cv2.COLORMAP_JET)
+        #
+        # cv2.imwrite(name + '.png',sa_norm)
+
+        # x0 = self.sa(x0) * x0
+        # feats = x0.cpu().numpy()
+        # feats_max = feats[0, :, :, :].max(0)
+        # feats_norm = feats_max / feats.max() * 255
+        # feats_norm = feats_norm.astype(np.uint8)
+        # feats_norm = cv2.applyColorMap(feats_norm, cv2.COLORMAP_JET)
+        # cv2.imwrite('/home/leo/Pictures/5/after/' + str(self.cout) + '.png', feats_norm)
+
+
+
         return x0
 
 
