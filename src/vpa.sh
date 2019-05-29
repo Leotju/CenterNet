@@ -11,4 +11,5 @@ python main.py ctdet --arch fatnetfrndasppdcndlalk416cbam --dataset pascal --gpu
 python test.py ctdet --arch fatnetfrndasppdcndlalk416cbam --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 1.25e-3 --exp_id fatnetfrndasppdcndlalk416cbam_lr10x_wh002 --wh_weight 0.02 --resume
 
 
+python main.py ctdet --arch fatnetfrndasppdcndlalk416cbam --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 1.25e-3 --exp_id fatnetfrndasppdcndlalk416cbam_sa21_ca2_lr10x_wh002 --wh_weight 0.02
 
