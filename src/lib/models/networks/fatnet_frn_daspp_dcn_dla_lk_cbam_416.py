@@ -162,11 +162,11 @@ class Pang_unit_stride_se(nn.Module):  #### basic unit
         # x0 = torch.mul(x0, x_se)
 
         x0 = F.upsample_nearest(x0, scale_factor=2)
-        # x1 = self.branch1(x)
-        # if self.cin == self.cout:
-        #     x0 = x1 + x0 + x
-        # else:
-        #     x0 = x1 + x0
+        x1 = self.branch1(x)
+        if self.cin == self.cout:
+            x0 = x1 + x0 + x
+        else:
+            x0 = x1 + x0
 
         # x0 = self.sa(x0) * x0
         # feats = x0.cpu().numpy()
