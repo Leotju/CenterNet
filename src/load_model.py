@@ -1,7 +1,7 @@
 import torch
 
-models = torch.load(
-    '/media/leo/data/code/pangnet/detection/object_as_point/Git/CenterNet/models/best.pangnet.2019-05-16-5956.pth.tar')
+# models = torch.load('models/RESNET18BU_IMAGENET_CBAM_checkpoint.pth.tar')
+models = torch.load('models/RESNET18BU_IMAGENET_CBAM_model_best.pth.tar')
 
 vgg = torch.load('/home/leo/.torch/models/vgg16-397923af.pth')
 
@@ -27,4 +27,4 @@ for w in weight:
 
     # weight_rename
 
-torch.save(weight_rename, open('/media/leo/data/code/pangnet/detection/object_as_point/Git/CenterNet/models/pangnet.pth', 'wb'))
+torch.save(weight_rename, open('/media/leo/data/code/pangnet/detection/object_as_point/Git/CenterNet/models/resnet18_cbam_bu.pth', 'wb'))
