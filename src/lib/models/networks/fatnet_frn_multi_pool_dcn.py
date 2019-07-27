@@ -210,7 +210,7 @@ class PosePangNet(nn.Module):
         self.conv1 = BasicConv(3, 16, kernel_size=7, stride=1, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
-        self.dense_aspp = dense_aspp()
+        # self.dense_aspp = dense_aspp()
         self.multi_pool = multi_pool()
 
         self.dcn = nn.Sequential(
