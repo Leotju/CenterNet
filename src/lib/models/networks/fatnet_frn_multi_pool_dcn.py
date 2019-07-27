@@ -191,12 +191,54 @@ class multi_pool(nn.Module):
         self.mp37 = nn.AvgPool2d(kernel_size=19, padding=9, stride=1)
         self.mp49 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
 
-
         self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
 
     def forward(self, x):
         out = self.trans(
             torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
+
+        return out
+
+
+class multi_pool_lk(nn.Module):
+    def __init__(self):
+        super(multi_pool_lk, self).__init__()
+        bias = True
+        bn = True
+        # self.conv1  =
+
+        self.mp3l = nn.AvgPool2d(kernel_size=(3, 1), padding=(1, 0), stride=1)
+        self.mp3r = nn.AvgPool2d(kernel_size=(1, 3), padding=(0, 1), stride=1)
+        self.mp7l = nn.AvgPool2d(kernel_size=(7, 1), padding=(3, 0), stride=1)
+        self.mp7r = nn.AvgPool2d(kernel_size=(1, 7), padding=(0, 3), stride=1)
+        self.mp13l = nn.AvgPool2d(kernel_size=(13, 1), padding=(6, 0), stride=1)
+        self.mp13r = nn.AvgPool2d(kernel_size=(1, 13), padding=(0, 6), stride=1)
+        self.mp25l = nn.AvgPool2d(kernel_size=(25, 1), padding=(12, 0), stride=1)
+        self.mp25r = nn.AvgPool2d(kernel_size=(1, 25), padding=(0, 12), stride=1)
+        self.mp37l = nn.AvgPool2d(kernel_size=(37, 1), padding=(18, 0), stride=1)
+        self.mp37r = nn.AvgPool2d(kernel_size=(1, 37), padding=(0, 18), stride=1)
+        self.mp49l = nn.AvgPool2d(kernel_size=(49, 1), padding=(24, 0), stride=1)
+        self.mp49r = nn.AvgPool2d(kernel_size=(1, 49), padding=(0, 24), stride=1)
+
+        # self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
+        # self.mp13 = nn.AvgPool2d(kernel_size=13, padding=6, stride=1)
+        # self.mp25 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
+        # self.mp37 = nn.AvgPool2d(kernel_size=37, padding=18, stride=1)
+        # self.mp49 = nn.AvgPool2d(kernel_size=49, padding=24, stride=1)
+
+        # self.mp3 = nn.AvgPool2d(kernel_size=3, padding=1, stride=1)
+        # self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
+        # self.mp13 = nn.AvgPool2d(kernel_size=11, padding=5, stride=1)
+        # self.mp25 = nn.AvgPool2d(kernel_size=15, padding=7, stride=1)
+        # self.mp37 = nn.AvgPool2d(kernel_size=19, padding=9, stride=1)
+        # self.mp49 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
+
+        self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+
+    def forward(self, x):
+        out = self.trans(
+            torch.cat((self.mp3l(x) + self.mp3r(x), self.mp7l(x) + self.mp7r(x), self.mp13l(x) + self.mp13r(x),
+                       self.mp25l(x) + self.mp25r(x), self.mp37l(x) + self.mp37r(x), self.mp49l(x) + self.mp49r(x)), 1))
 
         return out
 
@@ -244,6 +286,7 @@ class PosePangNet(nn.Module):
         self.features = self._make_layers_pangnet(batch_norm=True)
         # self.dense_aspp = dense_aspp()
         self.multi_pool = multi_pool()
+        self.multi_pool_lk = multi_pool_lk()
         self.ms_dw = ms_dw()
 
         self.dcn = nn.Sequential(
@@ -330,7 +373,8 @@ class PosePangNet(nn.Module):
         # x = F.max_pool2d(x, kernel_size=2, stride=2)
         # x = self.dense_aspp(x)
 
-        x = self.multi_pool(x)
+        x = self.multi_pool_lk(x)
+        # x = self.multi_pool(x)
         # x = self.ms_dw(x)
         x = self.dcn(x)
 
