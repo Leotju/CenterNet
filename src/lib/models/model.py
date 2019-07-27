@@ -39,7 +39,7 @@ from .networks.fatnet_daspp_dcn_dla_lk_416 import get_pose_net as get_pose_net_f
 from .networks.fatnet_daspp_dcn_dla_lk_dr import get_pose_net as get_pose_net_fatnet_daspp_dcn_dla_lk_dr
 from .networks.fatnet_daspp_dcn_dla_lk_se import get_pose_net as get_pose_net_fatnet_daspp_dcn_dla_lk_se
 
-
+from .networks.fatnet_frn_multi_pool_dcn import get_pose_net as get_pose_net_fatnet_multi_pool_dcn
 
 _model_factory = {
     'res': get_pose_net,  # default Resnet with deconv
@@ -78,6 +78,7 @@ _model_factory = {
     'fatnetfrndcnpre': get_pose_net_frn_dcn_pre,
     'fatnetfrn3dcnpre': get_pose_net_frn_3dcn_pre,
 
+    'fatnetfrnmpdcn':get_pose_net_fatnet_multi_pool_dcn,
 
 }
 
