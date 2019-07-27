@@ -172,7 +172,7 @@ class dense_aspp(nn.Module):
 
 class multi_pool(nn.Module):
     def __init__(self):
-        super(dense_aspp, self).__init__()
+        super(multi_pool, self).__init__()
         bias = True
         bn = True
         # self.conv1  =
