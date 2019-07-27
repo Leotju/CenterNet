@@ -236,9 +236,17 @@ class multi_pool_lk(nn.Module):
         self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
 
     def forward(self, x):
+        # out = self.trans(
+        #     torch.cat((self.mp3l(x) + self.mp3r(x), self.mp7l(x) + self.mp7r(x), self.mp13l(x) + self.mp13r(x),
+        #                self.mp25l(x) + self.mp25r(x), self.mp37l(x) + self.mp37r(x), self.mp49l(x) + self.mp49r(x)), 1))
+
         out = self.trans(
-            torch.cat((self.mp3l(x) + self.mp3r(x), self.mp7l(x) + self.mp7r(x), self.mp13l(x) + self.mp13r(x),
-                       self.mp25l(x) + self.mp25r(x), self.mp37l(x) + self.mp37r(x), self.mp49l(x) + self.mp49r(x)), 1))
+            torch.cat((self.mp3r(self.mp3l(x)) + self.mp3l(self.mp3r(x)),
+                       self.mp7r(self.mp7l(x)) + self.mp7l(self.mp7r(x)),
+                       self.mp13r(self.mp13l(x)) + self.mp13l(self.mp13r(x)),
+                       self.mp25r(self.mp25l(x)) + self.mp25l(self.mp25r(x)),
+                       self.mp37r(self.mp37l(x)) + self.mp37l(self.mp37r(x)),
+                       self.mp49r(self.mp49l(x)) + self.mp49l(self.mp49r(x))), 1))
 
         return out
 
