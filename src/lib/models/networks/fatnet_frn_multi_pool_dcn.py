@@ -177,18 +177,20 @@ class multi_pool(nn.Module):
         bn = True
         # self.conv1  =
 
+        # self.mp3 = nn.AvgPool2d(kernel_size=3, padding=1, stride=1)
+        # self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
+        # self.mp13 = nn.AvgPool2d(kernel_size=13, padding=6, stride=1)
+        # self.mp25 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
+        # self.mp37 = nn.AvgPool2d(kernel_size=37, padding=18, stride=1)
+        # self.mp49 = nn.AvgPool2d(kernel_size=49, padding=24, stride=1)
+
         self.mp3 = nn.AvgPool2d(kernel_size=3, padding=1, stride=1)
         self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
-        self.mp13 = nn.AvgPool2d(kernel_size=13, padding=6, stride=1)
+        self.mp7 = nn.AvgPool2d(kernel_size=11, padding=5, stride=1)
+        self.mp13 = nn.AvgPool2d(kernel_size=15, padding=7, stride=1)
+        self.mp13 = nn.AvgPool2d(kernel_size=19, padding=9, stride=1)
         self.mp25 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
-        self.mp37 = nn.AvgPool2d(kernel_size=37, padding=18, stride=1)
-        self.mp49 = nn.AvgPool2d(kernel_size=49, padding=24, stride=1)
 
-        # self.conv_d3 = BasicConv(128, 24, kernel_size=3, stride=1, padding=3, dilation=3, bn=bn, bias=bias)
-        # self.conv_d6 = BasicConv(128 + 24, 24, kernel_size=3, stride=1, padding=6, dilation=6, bn=bn, bias=bias)
-        # self.conv_d12 = BasicConv(128 + 48, 24, kernel_size=3, stride=1, padding=12, dilation=12, bn=bn, bias=bias)
-        # self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
-        # self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
 
         self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
 
@@ -328,8 +330,8 @@ class PosePangNet(nn.Module):
         # x = F.max_pool2d(x, kernel_size=2, stride=2)
         # x = self.dense_aspp(x)
 
-        # x = self.multi_pool(x)
-        x = self.ms_dw(x)
+        x = self.multi_pool(x)
+        # x = self.ms_dw(x)
         x = self.dcn(x)
 
         # x = self.conv1(x)
