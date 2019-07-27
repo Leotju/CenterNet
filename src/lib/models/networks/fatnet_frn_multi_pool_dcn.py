@@ -186,10 +186,10 @@ class multi_pool(nn.Module):
 
         self.mp3 = nn.AvgPool2d(kernel_size=3, padding=1, stride=1)
         self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
-        self.mp7 = nn.AvgPool2d(kernel_size=11, padding=5, stride=1)
-        self.mp13 = nn.AvgPool2d(kernel_size=15, padding=7, stride=1)
-        self.mp13 = nn.AvgPool2d(kernel_size=19, padding=9, stride=1)
-        self.mp25 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
+        self.mp13 = nn.AvgPool2d(kernel_size=11, padding=5, stride=1)
+        self.mp25 = nn.AvgPool2d(kernel_size=15, padding=7, stride=1)
+        self.mp37 = nn.AvgPool2d(kernel_size=19, padding=9, stride=1)
+        self.mp49 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
 
 
         self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
