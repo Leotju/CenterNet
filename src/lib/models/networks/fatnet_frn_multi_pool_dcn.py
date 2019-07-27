@@ -197,6 +197,33 @@ class multi_pool(nn.Module):
 
         return out
 
+class ms_dw(nn.Module):
+    def __init__(self):
+        super(ms_dw, self).__init__()
+        bias = True
+        bn = True
+        # self.conv1  =
+
+        self.mp3 = nn.Conv2d(kernel_size=3, padding=1, stride=1, groups=128)
+        self.mp7 = nn.Conv2d(kernel_size=7, padding=3, stride=1, groups=128)
+        self.mp13 = nn.Conv2d(kernel_size=13, padding=6, stride=1, groups=128)
+        self.mp25 = nn.Conv2d(kernel_size=25, padding=12, stride=1, groups=128)
+        self.mp37 = nn.Conv2d(kernel_size=37, padding=18, stride=1, groups=128)
+        self.mp49 = nn.Conv2d(kernel_size=49, padding=24, stride=1, groups=128)
+
+        # self.conv_d3 = BasicConv(128, 24, kernel_size=3, stride=1, padding=3, dilation=3, bn=bn, bias=bias)
+        # self.conv_d6 = BasicConv(128 + 24, 24, kernel_size=3, stride=1, padding=6, dilation=6, bn=bn, bias=bias)
+        # self.conv_d12 = BasicConv(128 + 48, 24, kernel_size=3, stride=1, padding=12, dilation=12, bn=bn, bias=bias)
+        # self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
+        # self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
+
+        self.trans = BasicConv(128*6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+
+    def forward(self, x):
+        out = self.trans(torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
+
+        return out
+
 
 class PosePangNet(nn.Module):
 
@@ -212,6 +239,7 @@ class PosePangNet(nn.Module):
         self.features = self._make_layers_pangnet(batch_norm=True)
         # self.dense_aspp = dense_aspp()
         self.multi_pool = multi_pool()
+        self.ms_dw = ms_dw()
 
         self.dcn = nn.Sequential(
             DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
@@ -298,7 +326,7 @@ class PosePangNet(nn.Module):
         # x = self.dense_aspp(x)
 
         # x = self.multi_pool(x)
-
+        x = self.ms_dw(x)
         x = self.dcn(x)
 
         # x = self.conv1(x)
