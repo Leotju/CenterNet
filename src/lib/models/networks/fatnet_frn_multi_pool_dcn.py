@@ -179,7 +179,7 @@ class multi_pool(nn.Module):
 
         self.mp3 = nn.AvgPool2d(kernel_size=3, padding=1, stride=1)
         self.mp7 = nn.AvgPool2d(kernel_size=7, padding=3, stride=1)
-        self.mp13 = nn.AvgPool2d(kernel_size=13, padding=7, stride=1)
+        self.mp13 = nn.AvgPool2d(kernel_size=13, padding=6, stride=1)
         self.mp25 = nn.AvgPool2d(kernel_size=25, padding=12, stride=1)
         self.mp37 = nn.AvgPool2d(kernel_size=37, padding=18, stride=1)
         self.mp49 = nn.AvgPool2d(kernel_size=49, padding=24, stride=1)
