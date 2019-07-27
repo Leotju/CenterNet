@@ -190,12 +190,14 @@ class multi_pool(nn.Module):
         # self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
         # self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
 
-        self.trans = BasicConv(128*6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
 
     def forward(self, x):
-        out = self.trans(torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
+        out = self.trans(
+            torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
 
         return out
+
 
 class ms_dw(nn.Module):
     def __init__(self):
@@ -204,12 +206,12 @@ class ms_dw(nn.Module):
         bn = True
         # self.conv1  =
 
-        self.mp3 = nn.Conv2d(kernel_size=3, padding=1, stride=1, groups=128)
-        self.mp7 = nn.Conv2d(kernel_size=7, padding=3, stride=1, groups=128)
-        self.mp13 = nn.Conv2d(kernel_size=13, padding=6, stride=1, groups=128)
-        self.mp25 = nn.Conv2d(kernel_size=25, padding=12, stride=1, groups=128)
-        self.mp37 = nn.Conv2d(kernel_size=37, padding=18, stride=1, groups=128)
-        self.mp49 = nn.Conv2d(kernel_size=49, padding=24, stride=1, groups=128)
+        self.mp3 = nn.Conv2d(128, 128, kernel_size=3, padding=1, stride=1, groups=128)
+        self.mp7 = nn.Conv2d(128, 128, kernel_size=7, padding=3, stride=1, groups=128)
+        self.mp13 = nn.Conv2d(128, 128, kernel_size=13, padding=6, stride=1, groups=128)
+        self.mp25 = nn.Conv2d(128, 128, kernel_size=25, padding=12, stride=1, groups=128)
+        self.mp37 = nn.Conv2d(128, 128, kernel_size=37, padding=18, stride=1, groups=128)
+        self.mp49 = nn.Conv2d(128, 128, kernel_size=49, padding=24, stride=1, groups=128)
 
         # self.conv_d3 = BasicConv(128, 24, kernel_size=3, stride=1, padding=3, dilation=3, bn=bn, bias=bias)
         # self.conv_d6 = BasicConv(128 + 24, 24, kernel_size=3, stride=1, padding=6, dilation=6, bn=bn, bias=bias)
@@ -217,10 +219,11 @@ class ms_dw(nn.Module):
         # self.conv_d18 = BasicConv(128 + 72, 24, kernel_size=3, stride=1, padding=18, dilation=18, bn=bn, bias=bias)
         # self.conv_d24 = BasicConv(128 + 96, 24, kernel_size=3, stride=1, padding=24, dilation=24, bn=bn, bias=bias)
 
-        self.trans = BasicConv(128*6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.trans = BasicConv(128 * 6, 128, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
 
     def forward(self, x):
-        out = self.trans(torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
+        out = self.trans(
+            torch.cat((self.mp3(x), self.mp7(x), self.mp13(x), self.mp25(x), self.mp37(x), self.mp49(x)), 1))
 
         return out
 
