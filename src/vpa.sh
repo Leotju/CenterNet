@@ -23,3 +23,6 @@ python main.py ctdet --exp_id resdcnbu18_512 --arch resdcnbu_18 --down_ratio 4 -
 python test.py ctdet --exp_id resdcnbu18_512 --arch resdcnbu_18 --down_ratio 4 --dataset pascal --input_res 512 --num_epochs 70 --lr_step 45,60  --gpus 0,1,2,3 --resume
 
 
+
+python main.py ctdet --arch fatnetfrndasppdcndlalk416cbam --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 1.25e-3 --exp_id fatnet_frn_pool_dla_dcn_lr10x_wh002 --wh_weight 0.02
+

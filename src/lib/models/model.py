@@ -25,8 +25,10 @@ from .networks.fatnet_frn_branch_pretrained import get_pose_net as get_pose_net_
 from .networks.fatnet_frn_daspp_dcn_dla_lk import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk
 from .networks.fatnet_frn_daspp_dcn_dla_lk_416_dr import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_416_dr
 from .networks.fatnet_frn_daspp_dcn_dla_lk_se_416 import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416
-from .networks.fatnet_frn_daspp_dcn_dla_lk_cbam_416 import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_cbam_416
-from .networks.fatnet_frn_daspp_dcn_dla_lk_se_416_37 import get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416_37
+from .networks.fatnet_frn_daspp_dcn_dla_lk_cbam_416 import \
+    get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_cbam_416
+from .networks.fatnet_frn_daspp_dcn_dla_lk_se_416_37 import \
+    get_pose_net as get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416_37
 from .networks.fatnet_frn_dcn_dla import get_pose_net as get_pose_net_frn_dcn_dla_smooth
 from .networks.fatnet_frn_dcn_pre import get_pose_net as get_pose_net_frn_dcn_pre
 from .networks.fatnet_frn_3dcn_pre import get_pose_net as get_pose_net_frn_3dcn_pre
@@ -41,6 +43,8 @@ from .networks.fatnet_daspp_dcn_dla_lk_se import get_pose_net as get_pose_net_fa
 
 from .networks.fatnet_frn_multi_pool_dcn import get_pose_net as get_pose_net_fatnet_multi_pool_dcn
 from .networks.fatnet_frn_block_multi_pool_dcn import get_pose_net as get_pose_net_fatnet_frn_block_multi_pool_dcn
+from .networks.fatnet_frn_pool_dla_dcn import get_pose_net as get_pose_net_fatnet_frn_pool_dla_dcn
+
 _model_factory = {
     'res': get_pose_net,  # default Resnet with deconv
     'dlav0': get_dlav0,  # default DLAup
@@ -51,7 +55,6 @@ _model_factory = {
     'vggdla': get_pose_net_vgg_dla,
     'resdcnbu': get_pose_net_res_cbam_bu,
 
-
     'fatnet': get_pose_net_fatnet,
     'fatnetdasppdcn': get_pose_net_fatnet_daspp_dcn,
     'fatnetdasppdcndla': get_pose_net_fatnet_daspp_dcn_dla,
@@ -60,26 +63,27 @@ _model_factory = {
     'fatnetdasppdcndlalkdr': get_pose_net_fatnet_daspp_dcn_dla_lk_dr,
     'fatnetdasppdcndlalkse': get_pose_net_fatnet_daspp_dcn_dla_lk_se,
 
-
     'fatnetfrn': get_pose_net_fatnet_frn,
     'fatnetfrndladaspp': get_pose_net_fatnet_frn_dla_daspp,
     'fatnetfrnmbdasppdcn': get_pose_net_fatnet_frn_mb_daspp_dcn,
-    'fatnetfrndladasppdcn':get_pose_net_fatnet_frn_daspp_dcn_dla,
-    'fatnetfrndladasppdcnlk':get_pose_net_fatnet_frn_daspp_dcn_dla_lk,
-    'fatnetfrndasppdcndlalk416dr':get_pose_net_fatnet_frn_daspp_dcn_dla_lk_416_dr,
-    'fatnetfrndasppdcndlalk416se':get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416,
-    'fatnetfrndasppdcndlalk416cbam':get_pose_net_fatnet_frn_daspp_dcn_dla_lk_cbam_416,
-    'fatnetfrndasppdcndlalk416se37':get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416_37,
+    'fatnetfrndladasppdcn': get_pose_net_fatnet_frn_daspp_dcn_dla,
+    'fatnetfrndladasppdcnlk': get_pose_net_fatnet_frn_daspp_dcn_dla_lk,
+    'fatnetfrndasppdcndlalk416dr': get_pose_net_fatnet_frn_daspp_dcn_dla_lk_416_dr,
+    'fatnetfrndasppdcndlalk416se': get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416,
+    'fatnetfrndasppdcndlalk416cbam': get_pose_net_fatnet_frn_daspp_dcn_dla_lk_cbam_416,
+    'fatnetfrndasppdcndlalk416se37': get_pose_net_fatnet_frn_daspp_dcn_dla_lk_se_416_37,
     'fatnetnetfrndcndlasmooth': get_pose_net_frn_dcn_dla_smooth,
 
-    'fatnetfrndladasppdcnatt':get_pose_net_fatnet_frn_daspp_dcn_dla_att,
+    'fatnetfrndladasppdcnatt': get_pose_net_fatnet_frn_daspp_dcn_dla_att,
     'fatnetfrnpre': get_pose_net_fatnet_frn_branch_daspp_dcn_pretrained,
 
     'fatnetfrndcnpre': get_pose_net_frn_dcn_pre,
     'fatnetfrn3dcnpre': get_pose_net_frn_3dcn_pre,
 
-    'fatnetfrnmpdcn':get_pose_net_fatnet_multi_pool_dcn,
-    'fatnetfrnblockmpdcn':get_pose_net_fatnet_frn_block_multi_pool_dcn,
+    'fatnetfrnmpdcn': get_pose_net_fatnet_multi_pool_dcn,
+    'fatnetfrnblockmpdcn': get_pose_net_fatnet_frn_block_multi_pool_dcn,
+
+    'fatnetfrnpooldladcn': get_pose_net_fatnet_frn_pool_dla_dcn
 
 }
 
