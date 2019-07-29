@@ -188,7 +188,7 @@ class PosePangNet(nn.Module):
         # x = F.max_pool2d(x, kernel_size=2, stride=2)
         # x = self.dense_aspp(x)
 
-        x = self.multi_pool_lk(x)
+        # x = self.multi_pool_lk(x)
         # x = self.multi_pool(x)
         # x = self.ms_dw(x)
         x = self.dcn(x)
