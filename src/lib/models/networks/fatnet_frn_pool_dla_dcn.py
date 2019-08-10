@@ -74,7 +74,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
         #     bias = True
         bias = True
         self.pool = nn.AvgPool2d(kernel_size=dilation + 1, stride=1, padding=(dilation + 1) // 2)
-        self.branch0 = BasicConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
+        self.branch0 = BasicConv(cin, cout, kernel_size=3, stride=2, padding=1, dilation=1, bn=bn,
                                  bias=bias)
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
@@ -128,7 +128,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(64, head_conv, kernel_size=9, padding=4, bias=True, bn=True, relu=True),
+                    BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
             else:
