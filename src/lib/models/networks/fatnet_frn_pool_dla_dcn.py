@@ -104,16 +104,29 @@ class PosePangNet(nn.Module):
 
         self.features = self._make_layers_pangnet(batch_norm=True)
 
+        # self.dcn = nn.Sequential(
+        #     DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+        #     DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+        #     DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+        # )
+        dcn_in_ch = 256
+        dcn_ch = 128
         self.dcn = nn.Sequential(
-            DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-            BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
+            DCN(dcn_in_ch, dcn_ch, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(dcn_ch, momentum=BN_MOMENTUM),
+            BasicConv(dcn_ch, dcn_ch, kernel_size=3, stride=1, padding=1),
+            DCN(dcn_ch, dcn_ch, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(dcn_ch, momentum=BN_MOMENTUM),
+            BasicConv(dcn_ch, dcn_ch, kernel_size=3, stride=1, padding=1),
+            DCN(dcn_ch, dcn_ch, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(dcn_ch, momentum=BN_MOMENTUM),
+            BasicConv(dcn_ch, dcn_ch, kernel_size=3, stride=1, padding=1),
         )
 
         for head in sorted(self.heads):
@@ -128,12 +141,12 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
+                    BasicConv(dcn_ch, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
             else:
                 fc = nn.Conv2d(
-                    in_channels=128,
+                    in_channels=dcn_ch,
                     out_channels=num_output,
                     kernel_size=1,
                     stride=1,
@@ -145,10 +158,10 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 16
+        in_channels = 32
         cfg = [16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for ic, v in enumerate(cfg):
-            v = v * 1
+            v = v * 2
             if ic <= 5:
                 layers.append(Pang_unit(in_channels, v, bn=batch_norm))
             elif ic > 5 and ic <= 9:
