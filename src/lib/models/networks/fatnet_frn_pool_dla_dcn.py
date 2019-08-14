@@ -158,7 +158,7 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 32
+        in_channels = 16
         cfg = [16, 16, 16, 16, 16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         for ic, v in enumerate(cfg):
             v = v * 2
