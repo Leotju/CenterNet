@@ -28,4 +28,4 @@ python main.py ctdet --arch fatnetfrnpooldladcn --dataset pascal --gpus 0,1 --do
 
 python main.py ctdet --arch fatnetfrnpooldladcn --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 1.25e-3 --exp_id fatnet_frn_pool_dla_dcn_lr10x_wh002_96_no_dil_ch2x --wh_weight 0.02
 
-python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 32 --wh_weight 0.02 --lr 1.25e-3 --exp_id resnet_18_dcn_wh_002_d1
+python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id resnet_18_dcn_wh_002_d1
