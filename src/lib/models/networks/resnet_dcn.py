@@ -258,7 +258,7 @@ class PoseResNet(nn.Module):
         x = self.layer4(x)
 
         x = self.deconv_layers(x)
-        x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
+        # x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
