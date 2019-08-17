@@ -30,3 +30,7 @@ python test.py ctdet --arch fatnetfrnmpdcn --dataset pascal --gpus 0,1,2,3 --dow
 python main.py ctdet --arch fatnetfrnblockmpdcn --wh_weight 0.02 --dataset pascal --gpus 0,1,2,3 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_block_pascal_192_multi_pool_dcn_lr10x_wh002
 
 
+python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1,2,3 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 1.25e-4 --exp_id resnet_18_dcn_wh_002_d1_dcn_up
+
+
+
