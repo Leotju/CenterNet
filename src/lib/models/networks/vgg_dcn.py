@@ -93,6 +93,8 @@ class PoseVGGNet(nn.Module):
             [4, 4, 4],
         )
 
+
+
         for head in self.heads:
             classes = self.heads[head]
             if head_conv > 0:
@@ -170,15 +172,17 @@ class PoseVGGNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        idx = [6, 13, 23, 33, 43]
+        # idx = [6, 13, 23, 33, 43]
         for i, layer in enumerate(self.features):
             x = layer(x)
-            if i in idx:
-                import numpy as np
-                np.save('/home/leo/Pictures/3/vgg/' + str(i) + '.npy', x.cpu().numpy())
+            # if i in idx:
+            #     import numpy as np
+            #     np.save('/home/leo/Pictures/3/vgg/' + str(i) + '.npy', x.cpu().numpy())
         # x = self.features(x)
 
         x = self.deconv_layers(x)
+        x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
+
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
