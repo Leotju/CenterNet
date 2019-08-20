@@ -32,26 +32,39 @@ def make_layers(cfg, batch_norm=False):
     layers = []
     in_channels = 3
 
+    # for v in cfg:
+    #     if v == 'M':
+    #         layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+    #     else:
+    #         if v >= 256:
+    #             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
+    #         else:
+    #             conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
+    #         if batch_norm:
+    #             layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
+    #         else:
+    #             layers += [conv2d, nn.ReLU(inplace=True)]
+    #         in_channels = v
+
     for v in cfg:
         if v == 'M':
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
-            if v >= 256:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
-            else:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
+            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
             if batch_norm:
                 layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
             else:
                 layers += [conv2d, nn.ReLU(inplace=True)]
             in_channels = v
+
     return nn.Sequential(*layers)
 
 
 cfg = {
     'A': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
     'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    # 'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    'D': [64, 64, 128, 128, 256, 256, 256, 512, 512, 512, 512, 512, 512],
     'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
 }
 
@@ -175,19 +188,19 @@ class PoseVGGNet(nn.Module):
 
     def forward(self, x):
 
-        features1 = self.features[:23]
-        features2 = self.features[24:33]
-        features3 = self.features[34:43]
-
-        for layer in features1:
-            x = layer(x)
-        for layer in features2:
-            x = layer(x)
-        for layer in features3:
-            x = layer(x)
-
-        # for i, layer in enumerate(self.features):
+        # features1 = self.features[:23]
+        # features2 = self.features[24:33]
+        # features3 = self.features[34:43]
+        #
+        # for layer in features1:
         #     x = layer(x)
+        # for layer in features2:
+        #     x = layer(x)
+        # for layer in features3:
+        #     x = layer(x)
+
+        for i, layer in enumerate(self.features):
+            x = layer(x)
 
         # x = self.features(x)
 
