@@ -43,5 +43,5 @@ python main.py ctdet --arch vgg_16 --dataset pascal --gpus 0,1 --down_ratio 1 --
 
 #python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 2 --wh_weight 0.02 --lr 0.625e-4 --exp_id vgg_no_pool_wh_002_d1
 
-python main.py ctdet --arch fatnet_frn_tl_conv --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id fatnet_frn_tl_conv_wh002
+python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --wh_weight 0.02 --lr 1.25e-3 --exp_id fatnet_frn_tl_conv_wh002_lr10x
 

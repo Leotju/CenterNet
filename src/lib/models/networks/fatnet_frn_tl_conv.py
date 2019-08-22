@@ -155,7 +155,7 @@ class PosePangNet(nn.Module):
     def forward(self, x):
         for layer in self.features:
             x = layer(x)
-
+        x = self.dcn(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
