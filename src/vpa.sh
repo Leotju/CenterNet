@@ -35,4 +35,13 @@ python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 1
 
 python main.py ctdet --arch vgg_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id vgg_dcn_wh_002_d1_up_bil
 
-python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id vgg_no_pool_wh_002_d1
+python main.py ctdet --arch vgg_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.1 --lr 0.625e-4 --exp_id vgg_dcn_wh_01_d1_up_bil
+
+python main.py ctdet --arch fatnet_frn_tl_conv --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id fatnet_frn_tl_conv_wh002
+
+python main.py ctdet --arch vgg_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.005 --lr 0.625e-4 --exp_id vgg_dcn_wh_0005_d1_up_bil
+
+#python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 2 --wh_weight 0.02 --lr 0.625e-4 --exp_id vgg_no_pool_wh_002_d1
+
+python main.py ctdet --arch fatnet_frn_tl_conv --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id fatnet_frn_tl_conv_wh002
+
