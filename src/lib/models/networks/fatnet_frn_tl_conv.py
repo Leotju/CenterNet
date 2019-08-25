@@ -96,6 +96,8 @@ class PosePangNet(nn.Module):
         #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         # )
 
+        self.trans_conv = BasicConv(128 + 64 +32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True, relu=True)
+
         self.dcn = nn.Sequential(
             DCN(128, 128, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(128, momentum=BN_MOMENTUM),
@@ -121,7 +123,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(64, head_conv, kernel_size=9, padding=4, bias=True, bn=True, relu=True),
+                    BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
 
@@ -153,8 +155,14 @@ class PosePangNet(nn.Module):
         return layers
 
     def forward(self, x):
-        for layer in self.features:
+        index = [5, 9, 12]
+        output = []
+        for id, layer in enumerate(self.features):
             x = layer(x)
+            if id in index:
+                output.append(x)
+        x = torch.cat(output, 1)
+        x = self.trans_conv(x)
         x = self.dcn(x)
         ret = {}
         for head in self.heads:
