@@ -19,6 +19,7 @@ import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
 from mmcv.cnn import vgg
+
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ model_urls = {
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
+
 
 def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
@@ -108,6 +110,7 @@ class Bottleneck(nn.Module):
 
         return out
 
+
 def fill_up_weights(up):
     w = up.weight.data
     f = math.ceil(w.size(2) / 2)
@@ -117,7 +120,8 @@ def fill_up_weights(up):
             w[0, 0, i, j] = \
                 (1 - math.fabs(i / f - c)) * (1 - math.fabs(j / f - c))
     for c in range(1, w.size(0)):
-        w[c, 0, :, :] = w[0, 0, :, :] 
+        w[c, 0, :, :] = w[0, 0, :, :]
+
 
 def fill_fc_weights(layers):
     for m in layers.modules():
@@ -127,6 +131,7 @@ def fill_fc_weights(layers):
             # torch.nn.init.xavier_normal_(m.weight.data)
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)
+
 
 class PoseResNet(nn.Module):
 
@@ -153,24 +158,35 @@ class PoseResNet(nn.Module):
             [4, 4, 4],
         )
 
+        self.conv_s2 = nn.Sequential(
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=2, bias=False, dilation=2),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            nn.ReLU(inplace=True),
+        )
+        self.conv_s1 = nn.Sequential(
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=4, bias=False, dilation=4),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            nn.ReLU(inplace=True),
+        )
+
         for head in self.heads:
             classes = self.heads[head]
             if head_conv > 0:
                 fc = nn.Sequential(
-                  nn.Conv2d(64, head_conv,
-                    kernel_size=3, padding=1, bias=True),
-                  nn.ReLU(inplace=True),
-                  nn.Conv2d(head_conv, classes, 
-                    kernel_size=1, stride=1, 
-                    padding=0, bias=True))
+                    nn.Conv2d(64, head_conv,
+                              kernel_size=3, padding=1, bias=True),
+                    nn.ReLU(inplace=True),
+                    nn.Conv2d(head_conv, classes,
+                              kernel_size=1, stride=1,
+                              padding=0, bias=True))
                 if 'hm' in head:
                     fc[-1].bias.data.fill_(-2.19)
                 else:
                     fill_fc_weights(fc)
             else:
-                fc = nn.Conv2d(64, classes, 
-                  kernel_size=1, stride=1, 
-                  padding=0, bias=True)
+                fc = nn.Conv2d(64, classes,
+                               kernel_size=1, stride=1,
+                               padding=0, bias=True)
                 if 'hm' in head:
                     fc.bias.data.fill_(-2.19)
                 else:
@@ -219,21 +235,21 @@ class PoseResNet(nn.Module):
                 self._get_deconv_cfg(num_kernels[i], i)
 
             planes = num_filters[i]
-            fc = DCN(self.inplanes, planes, 
-                    kernel_size=(3,3), stride=1,
-                    padding=1, dilation=1, deformable_groups=1)
+            fc = DCN(self.inplanes, planes,
+                     kernel_size=(3, 3), stride=1,
+                     padding=1, dilation=1, deformable_groups=1)
             # fc = nn.Conv2d(self.inplanes, planes,
             #         kernel_size=3, stride=1, 
             #         padding=1, dilation=1, bias=False)
             # fill_fc_weights(fc)
             up = nn.ConvTranspose2d(
-                    in_channels=planes,
-                    out_channels=planes,
-                    kernel_size=kernel,
-                    stride=2,
-                    padding=padding,
-                    output_padding=output_padding,
-                    bias=self.deconv_with_bias)
+                in_channels=planes,
+                out_channels=planes,
+                kernel_size=kernel,
+                stride=2,
+                padding=padding,
+                output_padding=output_padding,
+                bias=self.deconv_with_bias)
             fill_up_weights(up)
 
             layers.append(fc)
@@ -258,7 +274,11 @@ class PoseResNet(nn.Module):
         x = self.layer4(x)
 
         x = self.deconv_layers(x)
-        # x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
+
+        x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
+        x = self.conv_s2(x)
+        x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
+        x = self.conv_s1(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
@@ -286,8 +306,8 @@ resnet_spec = {18: (BasicBlock, [2, 2, 2, 2]),
 
 
 def get_pose_net(num_layers, heads, head_conv=256):
-  block_class, layers = resnet_spec[num_layers]
+    block_class, layers = resnet_spec[num_layers]
 
-  model = PoseResNet(block_class, layers, heads, head_conv=head_conv)
-  model.init_weights(num_layers)
-  return model
+    model = PoseResNet(block_class, layers, heads, head_conv=head_conv)
+    model.init_weights(num_layers)
+    return model
