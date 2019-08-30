@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 
+
 class BasicConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True,
                  bn=True, bias=False):
@@ -18,6 +19,7 @@ class BasicConv(nn.Module):
         if self.relu is not None:
             x = self.relu(x)
         return x
+
 
 # class TLConv(nn.Module):
 #     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True,
@@ -123,14 +125,14 @@ class TLConv(nn.Module):
                  bn=True, bias=False):
         super(TLConv, self).__init__()
         # stride = stride * 2
-        out_planes = out_planes
+        out_planes = out_planes // 2
 
         self.conv11 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
         self.conv12 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
-        self.conv2 = BasicConv(out_planes*2, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
-                                dilation=dilation, groups=groups, bias=bias)
+        # self.conv2 = BasicConv(out_planes * 2, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        #                        dilation=dilation, groups=groups, bias=bias)
         # self.conv22 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
         #                         dilation=dilation, groups=groups, bias=bias)
         self.up = nn.PixelShuffle(upscale_factor=2)
@@ -144,9 +146,6 @@ class TLConv(nn.Module):
 
         feats = torch.cat((x11, x12), 1)
 
-        feats = self.conv2(feats)
-
-
+        # feats = self.conv2(feats)
 
         return feats
-
