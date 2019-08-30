@@ -32,7 +32,7 @@ class Pang_unit(nn.Module):  #### basic unit
         #     bias = True
         bias = True
         self.branch0 = TLConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias, dilation=dilation)
-        self.branch1 = TLConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
 
@@ -49,7 +49,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
 
         self.branch0 = TLConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
                                  bias=bias)
-        self.branch1 = TLConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
 
