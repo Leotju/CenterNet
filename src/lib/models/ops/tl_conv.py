@@ -125,26 +125,31 @@ class TLConv(nn.Module):
                  bn=True, bias=False):
         super(TLConv, self).__init__()
         # stride = stride * 2
-        out_planes = out_planes // 2
+        out_planes = out_planes // 4
 
         self.conv11 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
         self.conv12 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
-        # self.conv2 = BasicConv(out_planes * 2, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
-        #                        dilation=dilation, groups=groups, bias=bias)
-        # self.conv22 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
-        #                         dilation=dilation, groups=groups, bias=bias)
+        self.conv21 = BasicConv(out_planes * 2, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+                               dilation=dilation, groups=groups, bias=bias)
+        self.conv22 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+                                dilation=dilation, groups=groups, bias=bias)
         self.up = nn.PixelShuffle(upscale_factor=2)
 
     def forward(self, x):
         x11 = self.conv11(x)
 
-        x_pad = torch.cat((x[:, :, 1:, :], x.new_zeros((x.size(0), x.size(1), 1, x.size(2)))), 2)
+        x_pad1 = torch.cat((x[:, :, 1:, :], x.new_zeros((x.size(0), x.size(1), 1, x.size(3)))), 2)
+        x12 = self.conv12(x_pad1)
 
-        x12 = self.conv12(x_pad)
+        x_pad2 = torch.cat((x[:, :, :, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2), 1))), 3)
+        x21 = self.conv21(x_pad2)
 
-        feats = torch.cat((x11, x12), 1)
+        x_pad3 = torch.cat(torch.cat((x[:, :, 1:, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2), 1))), 3), x.new_zeros((x.size(0), x.size(1), 1, x.size(3))), 2)
+        x22 = self.conv22(x_pad3)
+
+        feats = torch.cat((x11, x12, x21, x22), 1)
 
         # feats = self.conv2(feats)
 
