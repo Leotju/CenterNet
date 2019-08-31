@@ -146,7 +146,7 @@ class TLConv(nn.Module):
         x_pad2 = torch.cat((x[:, :, :, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2), 1))), 3)
         x21 = self.conv21(x_pad2)
 
-        x_pad3 = torch.cat(torch.cat((x[:, :, 1:, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2), 1))), 3), x.new_zeros((x.size(0), x.size(1), 1, x.size(3))), 2)
+        x_pad3 = torch.cat(torch.cat((x[:, :, 1:, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2) - 1, 1))), 3), x.new_zeros((x.size(0), x.size(1), 1, x.size(3))), 2)
         x22 = self.conv22(x_pad3)
 
         feats = torch.cat((x11, x12, x21, x22), 1)
