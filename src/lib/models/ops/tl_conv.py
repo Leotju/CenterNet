@@ -131,7 +131,7 @@ class TLConv(nn.Module):
                                 dilation=dilation, groups=groups, bias=bias)
         self.conv12 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
-        self.conv21 = BasicConv(out_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        self.conv21 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                dilation=dilation, groups=groups, bias=bias)
         self.conv22 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias)
