@@ -275,10 +275,10 @@ class PoseResNet(nn.Module):
 
         x = self.deconv_layers(x)
 
-        x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
-        x = self.conv_s2(x)
-        x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
-        x = self.conv_s1(x)
+        # x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
+        # x = self.conv_s2(x)
+        # x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
+        # x = self.conv_s1(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)

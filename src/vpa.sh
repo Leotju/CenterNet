@@ -62,3 +62,5 @@ python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 1,2,3 --down
 
 python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --batch_size 16 --wh_weight 0.02 --lr 0.625e-4 --exp_id resnet_18_dcn_wh_002_d1_2_dil_conv_96
 
+python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 192 --num_epochs 70 --lr_step 45,60 --wh_weight 0.02 --exp_id resnet_18_dcn_d4_192
+
