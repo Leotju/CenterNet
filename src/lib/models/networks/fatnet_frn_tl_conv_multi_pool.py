@@ -65,7 +65,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
 
 class Multi_Pooling(nn.Module):  #### basic unit
     def __init__(self):
-        super(Pang_unit_stride, self).__init__()
+        super(Multi_Pooling, self).__init__()
         self.pool2 = nn.AvgPool2d(kernel_size=2, stride=2)
         self.up2 = nn.UpsamplingBilinear2d(scale_factor=2)
 
