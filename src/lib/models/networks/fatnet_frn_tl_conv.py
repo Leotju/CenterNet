@@ -17,7 +17,7 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
-from ..ops.tl_conv import TLConv
+from ..ops.tl_conv_v4 import TLConv
 from ..ops.basic_conv import BasicConv
 BN_MOMENTUM = 0.1
 
