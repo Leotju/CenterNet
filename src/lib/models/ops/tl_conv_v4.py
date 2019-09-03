@@ -20,6 +20,7 @@ class BasicConv(nn.Module):
             x = self.relu(x)
         return x
 
+
 class TLConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True,
                  bn=True, bias=False, tile_size=1):
@@ -30,21 +31,22 @@ class TLConv(nn.Module):
         self.convs = nn.ModuleList()
         self.conv_trans = BasicConv(out_planes_div * self.tile_size * self.tile_size, out_planes, 1, 1, 0)
         for i in range(tile_size * tile_size):
-            self.convs(BasicConv(in_planes, out_planes_div, kernel_size=kernel_size, stride=stride, padding=padding,
-                                dilation=dilation, groups=groups, bias=bias))
+            self.convs.append(BasicConv(in_planes, out_planes_div, kernel_size=kernel_size, stride=stride, padding=padding,
+                                 dilation=dilation, groups=groups, bias=bias))
 
     def forward(self, x):
         b, c, h, w = x.size()
         pad = self.tile_size // 2
-        w_pad = x.new_zeros(b,c , h, pad)
-        h_pad = x.new_zeros(b, c ,pad, w - pad*2)
+        w_pad = x.new_zeros(b, c, h, pad)
+        h_pad = x.new_zeros(b, c, pad, w - pad * 2)
         x_padding = torch.cat((h_pad, x, h_pad), 3)
         x_padding = torch.cat((w_pad, x_padding, w_pad))
         outs = []
         conv_idx = 0
         for i in range(0, self.tile_size):
             for j in range(0, self.tile_size):
-                feat = x_padding[:, :, i:x_padding.size(0) - (self.tile_size -i -1), j:x_padding.size(0) - (self.tile_size -j -1)]
+                feat = x_padding[:, :, i:x_padding.size(0) - (self.tile_size - i - 1),
+                       j:x_padding.size(0) - (self.tile_size - j - 1)]
                 feat = self.convs[conv_idx](feat)
                 outs.append(feat)
         out_feat = torch.cat(outs, 1)
