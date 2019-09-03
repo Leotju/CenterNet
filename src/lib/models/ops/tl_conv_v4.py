@@ -40,8 +40,8 @@ class TLConv(nn.Module):
         pad = self.tile_size // 2
         w_pad = x.new_zeros(b, c, h, pad)
         h_pad = x.new_zeros(b, c, pad, w + pad * 2)
-        x_padding = torch.cat((w_pad, x, w_pad), 2)
-        x_padding = torch.cat((h_pad, x_padding, h_pad), 3)
+        x_padding = torch.cat((w_pad, x, w_pad), 3)
+        x_padding = torch.cat((h_pad, x_padding, h_pad), 2)
         outs = []
         conv_idx = 0
         for i in range(0, self.tile_size):
