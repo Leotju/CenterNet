@@ -46,8 +46,8 @@ class TLConv(nn.Module):
         conv_idx = 0
         for i in range(0, self.tile_size):
             for j in range(0, self.tile_size):
-                feat = x_padding[:, :, i:x_padding.size(0) - (self.tile_size - i - 1),
-                       j:x_padding.size(0) - (self.tile_size - j - 1)]
+                feat = x_padding[:, :, i:x_padding.size(2) - (self.tile_size - i - 1),
+                       j:x_padding.size(3) - (self.tile_size - j - 1)]
                 feat = self.convs[conv_idx](feat)
                 outs.append(feat)
         out_feat = torch.cat(outs, 1)
