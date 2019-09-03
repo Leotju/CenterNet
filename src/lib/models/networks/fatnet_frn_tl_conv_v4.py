@@ -141,7 +141,7 @@ class PosePangNet(nn.Module):
         in_channels = 3
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         dilation = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
-        tile_size = [1, 1, 3, 3, 3, 3, 7, 7, 7, 7, 15, 15, 15]
+        tile_size = [1, 1, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7]
         for ic, v in enumerate(cfg):
             v = v * 1
             if ic <= 1:

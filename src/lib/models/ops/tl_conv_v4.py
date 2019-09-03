@@ -29,7 +29,7 @@ class TLConv(nn.Module):
         self.tile_size = tile_size
         out_planes_div = out_planes // (self.tile_size * self.tile_size)
         self.convs = nn.ModuleList()
-        print(out_planes_div * self.tile_size * self.tile_size)
+        # print(out_planes_div * self.tile_size * self.tile_size)
         self.conv_trans = BasicConv(out_planes_div * self.tile_size * self.tile_size, out_planes, kernel_size=1, stride=1, padding=0)
         for i in range(tile_size * tile_size):
             self.convs.append(BasicConv(in_planes, out_planes_div, kernel_size=kernel_size, stride=stride, padding=padding,
