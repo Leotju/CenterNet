@@ -59,7 +59,7 @@ python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_r
 
 python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 1,2,3 --down_ratio 1 --input_res 192 --num_epochs 210 --lr_step 135,180 --batch_size 48 --wh_weight 0.02 --lr 1.875e-3 --exp_id fatnet_frn_tl_conv_v3_wh002_lr10x_multi_5912_192
 
-python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 1,2,3 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 192 --wh_weight 0.02 --lr 7.5e-3 --exp_id fatnet_frn_tl_conv_v4_wh002_lr10x_multi_5912_96
+python main.py ctdet --arch fatnetfrntlconvv4 --dataset pascal --gpus 1,2 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 128 --wh_weight 0.02 --lr 5e-3 --exp_id fatnet_frn_tl_conv_v4_wh002_lr10x_multi_5912_96
 
 python main.py ctdet --arch fatnetfrntlconvmlp --dataset pascal --gpus 1,2,3 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 192 --wh_weight 0.02 --lr 11.25e-3 --exp_id fatnet_frn_tl_conv_v3_4_mlp_wh002_lr10x_multi_5912_96
 

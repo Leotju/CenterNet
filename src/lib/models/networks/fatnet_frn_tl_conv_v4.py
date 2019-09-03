@@ -24,14 +24,14 @@ BN_MOMENTUM = 0.1
 
 
 class Pang_unit(nn.Module):  #### basic unit
-    def __init__(self, cin, cout, bn, dilation=1):
+    def __init__(self, cin, cout, bn, dilation=1, tile_size=1):
         super(Pang_unit, self).__init__()
         # if bn==True:
         #     bias = False
         # else:
         #     bias = True
         bias = True
-        self.branch0 = TLConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias, dilation=dilation)
+        self.branch0 = TLConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias, dilation=dilation, tile_size=tile_size)
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
@@ -43,12 +43,12 @@ class Pang_unit(nn.Module):  #### basic unit
         return x0
 
 class Pang_unit_stride(nn.Module):  #### basic unit
-    def __init__(self, cin, cout, bn, dilation):
+    def __init__(self, cin, cout, bn, dilation, tile_size):
         super(Pang_unit_stride, self).__init__()
         bias = False
 
         self.branch0 = TLConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
-                                 bias=bias)
+                                 bias=bias, tile_size=tile_size)
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
@@ -143,9 +143,9 @@ class PosePangNet(nn.Module):
         for ic, v in enumerate(cfg):
             v = v * 1
             if ic <= 1:
-                layers.append(Pang_unit(in_channels, v, dilation=dilation[ic], bn=batch_norm))
+                layers.append(Pang_unit(in_channels, v, dilation=dilation[ic], bn=batch_norm, tile_size=tile_size[ic]))
             else:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation = dilation[ic]))
+                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation = dilation[ic], tile_size=tile_size[ic]))
             in_channels = v
         return layers
 

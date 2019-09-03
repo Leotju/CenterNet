@@ -25,9 +25,9 @@ class TLConv(nn.Module):
                  bn=True, bias=False, tile_size=1):
         super(TLConv, self).__init__()
         # stride = stride * 2
+        self.tile_size = tile_size
         out_planes_div = out_planes // (self.tile_size * self.tile_size)
         self.convs = nn.ModuleList()
-        self.tile_size = tile_size
         self.conv_trans = BasicConv(out_planes_div * self.tile_size * self.tile_size, out_planes, 1, 1, 0)
         for i in range(tile_size * tile_size):
             self.convs(BasicConv(in_planes, out_planes_div, kernel_size=kernel_size, stride=stride, padding=padding,
