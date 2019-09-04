@@ -131,7 +131,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    TLCONVV4(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True, tile_size=7),
+                    TLCONVV4(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True, tile_size=3),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
 
