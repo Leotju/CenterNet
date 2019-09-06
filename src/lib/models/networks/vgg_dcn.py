@@ -182,7 +182,7 @@ class PoseVGGNet(nn.Module):
         # x = self.features(x)
 
         x = self.deconv_layers(x)
-        x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
+        # x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
 
         ret = {}
         for head in self.heads:
