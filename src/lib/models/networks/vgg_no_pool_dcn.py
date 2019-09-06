@@ -15,6 +15,7 @@ import logging
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
 import torchvision
@@ -36,32 +37,12 @@ def make_layers(cfg, batch_norm=False):
         if v == 'M':
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
-            if v == 128:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
-            elif v == 256:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=4, dilation=4)
-            elif v == 512:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=4, dilation=8)
-            else:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
-
+            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
             if batch_norm:
                 layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
             else:
                 layers += [conv2d, nn.ReLU(inplace=True)]
             in_channels = v
-
-    # for v in cfg:
-    #     if v == 'M':
-    #         layers += [nn.MaxPool2d(kernel_size=1, stride=1)]
-    #     else:
-    #         conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
-    #         if batch_norm:
-    #             layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
-    #         else:
-    #             layers += [conv2d, nn.ReLU(inplace=True)]
-    #         in_channels = v
-
     return nn.Sequential(*layers)
 
 
@@ -69,7 +50,6 @@ cfg = {
     'A': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
     'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
     'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
-    # 'D': [64, 64, 128, 128, 256, 256, 256, 512, 512, 512, 512, 512, 512],
     'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
 }
 
@@ -107,7 +87,6 @@ class PoseVGGNet(nn.Module):
 
         self.features = make_layers(cfg['D'], batch_norm=True)
 
-
         # used for deconv layers
         self.deconv_layers = self._make_deconv_layer(
             3,
@@ -115,11 +94,13 @@ class PoseVGGNet(nn.Module):
             [4, 4, 4],
         )
 
+
+
         for head in self.heads:
             classes = self.heads[head]
             if head_conv > 0:
                 fc = nn.Sequential(
-                    nn.Conv2d(512, head_conv,
+                    nn.Conv2d(64, head_conv,
                               kernel_size=3, padding=1, bias=True),
                     nn.ReLU(inplace=True),
                     nn.Conv2d(head_conv, classes,
@@ -184,37 +165,34 @@ class PoseVGGNet(nn.Module):
             layers.append(fc)
             layers.append(nn.BatchNorm2d(planes, momentum=BN_MOMENTUM))
             layers.append(nn.ReLU(inplace=True))
-            # layers.append(up)
-            # layers.append(nn.BatchNorm2d(planes, momentum=BN_MOMENTUM))
-            # layers.append(nn.ReLU(inplace=True))
+            layers.append(up)
+            layers.append(nn.BatchNorm2d(planes, momentum=BN_MOMENTUM))
+            layers.append(nn.ReLU(inplace=True))
             self.inplanes = planes
 
         return nn.Sequential(*layers)
 
     def forward(self, x):
 
-        features1 = self.features[:6]
-        features2 = self.features[7:13]
-        features3 = self.features[14:23]
-        features4 = self.features[24:33]
-        features5 = self.features[34:43]
-        #
+        features1 = self.features[:23]
+        features2 = self.features[24:33]
+        features3 = self.features[34:43]
+
         for layer in features1:
             x = layer(x)
         for layer in features2:
             x = layer(x)
         for layer in features3:
             x = layer(x)
-        for layer in features4:
-            x = layer(x)
-        for layer in features5:
-            x = layer(x)
+
+
         # for i, layer in enumerate(self.features):
         #     x = layer(x)
 
-        # x = self.features(x)
 
         x = self.deconv_layers(x)
+        x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
+
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
