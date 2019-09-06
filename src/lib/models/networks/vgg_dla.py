@@ -37,11 +37,11 @@ def make_layers(cfg, batch_norm=False):
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
             if v == 128:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
+                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1, dilation=1)
             elif v == 256:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
+                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1, dilation=1)
             elif v == 512:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=2, dilation=2)
+                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1, dilation=1)
             else:
                 conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
 
