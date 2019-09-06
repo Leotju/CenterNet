@@ -134,7 +134,7 @@ class PoseVGGNet(nn.Module):
             classes = self.heads[head]
             if head_conv > 0:
                 fc = nn.Sequential(
-                    nn.Conv2d(512, head_conv,
+                    nn.Conv2d(64, head_conv,
                               kernel_size=3, padding=1, bias=True),
                     nn.ReLU(inplace=True),
                     nn.Conv2d(head_conv, classes,
