@@ -115,6 +115,21 @@ class PoseVGGNet(nn.Module):
             [4, 4, 4],
         )
 
+        self.dcn = nn.Sequential(
+            DCN(512, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
+        )
+
         for head in self.heads:
             classes = self.heads[head]
             if head_conv > 0:
@@ -214,7 +229,7 @@ class PoseVGGNet(nn.Module):
 
         # x = self.features(x)
 
-        x = self.deconv_layers(x)
+        x = self.dcn(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
