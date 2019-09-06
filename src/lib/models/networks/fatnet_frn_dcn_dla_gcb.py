@@ -44,15 +44,15 @@ class BasicConv(nn.Module):
 
 
 class Pang_unit(nn.Module):  #### basic unit
-    def __init__(self, cin, cout, bn):
+    def __init__(self, cin, cout, bn, dilation):
         super(Pang_unit, self).__init__()
         # if bn==True:
         #     bias = False
         # else:
         #     bias = True
         bias = True
-        self.branch0 = BasicConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias)
-        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
+        self.branch0 = BasicConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias, dilation=dilation)
+        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias, dilation=dilation)
         self.cin = cin
         self.cout = cout
         self.gcb = ContextBlock(cin, 4)
