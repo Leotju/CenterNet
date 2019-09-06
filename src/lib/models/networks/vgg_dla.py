@@ -41,7 +41,7 @@ def make_layers(cfg, batch_norm=False):
             elif v == 256:
                 conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=4, dilation=4)
             elif v == 512:
-                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=4, dilation=8)
+                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=8, dilation=8)
             else:
                 conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
 
