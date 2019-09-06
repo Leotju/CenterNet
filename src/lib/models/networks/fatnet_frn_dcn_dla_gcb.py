@@ -55,7 +55,7 @@ class Pang_unit(nn.Module):  #### basic unit
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias, dilation=dilation)
         self.cin = cin
         self.cout = cout
-        self.gcb = ContextBlock(cin, 4)
+        self.gcb = ContextBlock(cout, 4)
 
     def forward(self, x):
         x0 = self.branch0(x)
@@ -82,7 +82,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
-        self.gcb = ContextBlock(cin, 4)
+        self.gcb = ContextBlock(cout, 4)
 
     def forward(self, x):
         x0 = self.branch0(x)
