@@ -74,4 +74,6 @@ python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1 --down_ratio 4
 
 python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 70 --lr_step 45,60 --batch_size 32 --wh_weight 0.02 --lr 1.25e-4 --exp_id vgg_no_pool_wh_002_d1
 
+python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 70 --lr_step 45,60 --batch_size 32 --wh_weight 0.02 --lr 1.25e-4 --exp_id vgg_no_pool_wh_002_d4
+
 

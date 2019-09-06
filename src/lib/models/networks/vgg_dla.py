@@ -208,9 +208,9 @@ class PoseVGGNet(nn.Module):
 
     def forward(self, x):
 
-        features1 = self.features[:6]
+        features1 = self.features[:7]
         features2 = self.features[7:13]
-        features3 = self.features[14:23]
+        features3 = self.features[13:23]
         features4 = self.features[24:33]
         features5 = self.features[34:43]
         #
