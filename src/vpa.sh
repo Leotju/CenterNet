@@ -77,3 +77,8 @@ python main.py ctdet --arch vggdla_16 --dataset pascal --gpus 0,1 --down_ratio 1
 python main.py ctdet --arch vgg_16 --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 192 --num_epochs 70 --lr_step 45,60 --batch_size 32 --lr 1.25e-4 --exp_id vgg_d4_192
 
 
+python main.py ctdet --arch fatnetfrndcndlagcb --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --wh_weight 0.02 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_dcn_dla_gcb_wh_002_d1_96
+
+
+
+

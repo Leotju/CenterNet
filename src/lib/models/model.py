@@ -49,6 +49,8 @@ from .networks.fatnet_frn_tl_conv import get_pose_net as get_pose_net_fatnet_frn
 from .networks.fatnet_frn_tl_conv_v4 import get_pose_net as get_pose_net_fatnet_frn_tl_conv_v4
 from .networks.fatnet_frn_tl_conv_multi_pool import get_pose_net as get_pose_net_fatnet_frn_tl_conv_mlp
 from .networks.fatnet_frn_tl_conv_pred_tl_v4 import get_pose_net as get_pose_net_fatnet_frn_tl_conv_pred_tl_conv_v4
+from .networks.fatnet_frn_dcn_dla_gcb import get_pose_net as get_pose_net_fatnet_frn_dcn_dla_gcb
+
 
 from .networks.fatnet_tl_conv_multi_pool import get_pose_net as get_pose_net_fatnet_tl_conv_mlp
 _model_factory = {
@@ -95,6 +97,8 @@ _model_factory = {
     'fatnetfrntlconvv4':get_pose_net_fatnet_frn_tl_conv_v4,
     'fatnetfrntlconvmlp':get_pose_net_fatnet_frn_tl_conv_mlp,
     'fatnetfrntlconvpredtlv4': get_pose_net_fatnet_frn_tl_conv_pred_tl_conv_v4,
+
+    'fatnetfrndcndlagcb':get_pose_net_fatnet_frn_dcn_dla_gcb,
 
     'fatnettlconvmlp':get_pose_net_fatnet_tl_conv_mlp,
 
