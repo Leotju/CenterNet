@@ -50,8 +50,7 @@ from .networks.fatnet_frn_tl_conv_v4 import get_pose_net as get_pose_net_fatnet_
 from .networks.fatnet_frn_tl_conv_multi_pool import get_pose_net as get_pose_net_fatnet_frn_tl_conv_mlp
 from .networks.fatnet_frn_tl_conv_pred_tl_v4 import get_pose_net as get_pose_net_fatnet_frn_tl_conv_pred_tl_conv_v4
 from .networks.fatnet_frn_dcn_dla_gcb import get_pose_net as get_pose_net_fatnet_frn_dcn_dla_gcb
-
-
+from .networks.fatnet_frn_tl_conv_multi_kernel_pred import get_pose_net as get_pose_net_fatnet_frn_multi_kernel_pred
 from .networks.fatnet_tl_conv_multi_pool import get_pose_net as get_pose_net_fatnet_tl_conv_mlp
 _model_factory = {
     'res': get_pose_net,  # default Resnet with deconv
@@ -101,7 +100,7 @@ _model_factory = {
     'fatnetfrndcndlagcb':get_pose_net_fatnet_frn_dcn_dla_gcb,
 
     'fatnettlconvmlp':get_pose_net_fatnet_tl_conv_mlp,
-
+    'fatnettlconvmultikernelpred': get_pose_net_fatnet_frn_multi_kernel_pred,
 
 }
 
