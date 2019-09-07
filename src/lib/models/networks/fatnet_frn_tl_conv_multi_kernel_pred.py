@@ -63,9 +63,9 @@ class PosePangNet(nn.Module):
         self.conv4_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=8, dilation=8)
         self.conv4_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=8, dilation=8)
 
-        self.conv5_1 = TLConv(8, 4, kernel_size=3, stride=1, padding=16, dilation=16)
-        self.conv5_2 = TLConv(4, 4, kernel_size=3, stride=1, padding=16, dilation=16)
-        self.conv5_3 = TLConv(4, 4, kernel_size=3, stride=1, padding=16, dilation=16)
+        self.conv5_1 = TLConv(8, 8, kernel_size=3, stride=1, padding=16, dilation=16)
+        self.conv5_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=16, dilation=16)
+        self.conv5_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=16, dilation=16)
 
         self.frn = nn.Sequential(
             self.conv1_1, self.conv1_2, self.conv2_1, self.conv2_2, self.conv3_1, self.conv3_2, self.conv3_3,
@@ -73,7 +73,7 @@ class PosePangNet(nn.Module):
         )
 
 
-        self.multi_kernel_pred = MKConv(in_channels=4, kernel_list=[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 25])
+        self.multi_kernel_pred = MKConv(in_channels=8, kernel_list=[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 25])
 
 
         # self.dcn = nn.Sequential(
@@ -118,7 +118,7 @@ class PosePangNet(nn.Module):
                 #               kernel_size=1, stride=1, padding=0))
 
                 fc = nn.Sequential(
-                    BasicConv(48, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
+                    BasicConv(96, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
                 # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
 
