@@ -68,20 +68,20 @@ class PosePangNet(nn.Module):
         # self.conv5_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=16, dilation=16, tile_size=17)
         # self.conv5_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=16, dilation=16, tile_size=17)
 
-        self.conv2_1 = TLConv(64, 32, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
-        self.conv2_2 = TLConv(32, 32, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
+        self.conv2_1 = TLConv(64, 32, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=7)
+        self.conv2_2 = TLConv(32, 32, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=7)
 
-        self.conv3_1 = TLConv(32, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=5)
-        self.conv3_2 = TLConv(16, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=5)
-        self.conv3_3 = TLConv(16, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=5)
+        self.conv3_1 = TLConv(32, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=7)
+        self.conv3_2 = TLConv(16, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=7)
+        self.conv3_3 = TLConv(16, 16, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=7)
 
-        self.conv4_1 = TLConv(16, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=9)
-        self.conv4_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=9)
-        self.conv4_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=9)
+        self.conv4_1 = TLConv(16, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
+        self.conv4_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
+        self.conv4_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
 
-        self.conv5_1 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=17)
-        self.conv5_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=17)
-        self.conv5_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=17)
+        self.conv5_1 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
+        self.conv5_2 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
+        self.conv5_3 = TLConv(8, 8, kernel_size=3, stride=1, padding=1, dilation=1, tile_size=3)
 
 
         self.frn = nn.Sequential(
