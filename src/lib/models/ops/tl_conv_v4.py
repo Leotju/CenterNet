@@ -28,6 +28,7 @@ class TLConv(nn.Module):
         # stride = stride * 2
         self.tile_size = tile_size
         out_planes_div = out_planes // (self.tile_size * self.tile_size)
+        out_planes_div = max(out_planes_div, 1)
         self.convs = nn.ModuleList()
         # print(out_planes_div * self.tile_size * self.tile_size)
         self.conv_trans = BasicConv(out_planes_div * self.tile_size * self.tile_size, out_planes, kernel_size=1, stride=1, padding=0)
