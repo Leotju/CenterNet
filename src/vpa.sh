@@ -82,6 +82,8 @@ python main.py ctdet --arch fatnettlconvmultikernelpred --dataset pascal --gpus 
 
 python main.py ctdet --arch fatnettlconvmultikernelpred --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --wh_weight 0.02 --exp_id fatnet_tlconvv34_block5_8_multi_kernel_pred_96_wh_002_lr10x
 
+python main.py ctdet --arch fatnettlconvmultikernelpred --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --wh_weight 0.02 --exp_id fatnet_basic_conv_block5_8_multi_kernel_pred_96_wh_002_lr10x
+
 python main.py ctdet --arch fatnettlconvmultikernelpred --dataset pascal --gpus 0,1 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 0.625e-3 --wh_weight 0.02 --exp_id fatnet_tlconvv4_block5_8_no_dla_multi_kernel_pred_96_wh_002_lr10x
 
 
