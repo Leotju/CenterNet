@@ -20,40 +20,63 @@ class BasicConv(nn.Module):
             x = self.relu(x)
         return x
 
-
 class TLConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size, stride=1, padding=0, dilation=1, groups=1, relu=True,
-                 bn=True, bias=False, tile_size=1):
+                 bn=True, bias=False, tile_size=2):
         super(TLConv, self).__init__()
         # stride = stride * 2
+        tile_chn = max(in_planes // (tile_size * tile_size))
+        self.trans_conv = BasicConv(tile_chn * tile_size * tile_size, out_planes)
+
+        # self.conv11 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        #                         dilation=dilation, groups=groups, bias=bias)
+        # self.conv12 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        #                         dilation=dilation, groups=groups, bias=bias)
+        # self.conv21 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        #                        dilation=dilation, groups=groups, bias=bias)
+        # self.conv22 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+        #                         dilation=dilation, groups=groups, bias=bias)
+        #
         self.tile_size = tile_size
-        out_planes_div = out_planes // (self.tile_size * self.tile_size)
-        out_planes_div = max(out_planes_div, 1)
-        self.convs = nn.ModuleList()
-        # print(out_planes_div * self.tile_size * self.tile_size)
-        self.conv_trans = BasicConv(out_planes_div * self.tile_size * self.tile_size, out_planes, kernel_size=1, stride=1, padding=0)
+        self.conv_list = nn.ModuleList()
         for i in range(tile_size * tile_size):
-            self.convs.append(BasicConv(in_planes, out_planes_div, kernel_size=kernel_size, stride=stride, padding=tile_size,
-                                 dilation=dilation, groups=groups, bias=bias))
+            self.conv_list.append(BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+                                dilation=dilation, groups=groups, bias=bias))
 
     def forward(self, x):
-        b, c, h, w = x.size()
-        pad = self.tile_size // 2
-        w_pad = x.new_zeros(b, c, h, pad)
-        h_pad = x.new_zeros(b, c, pad, w + pad * 2)
-        x_padding = torch.cat((w_pad, x, w_pad), 3)
-        x_padding = torch.cat((h_pad, x_padding, h_pad), 2)
-        outs = []
+        # x11 = self.conv11(x)
+
+        # x_pad1 = torch.cat((x[:, :, 1:, :], x.new_zeros((x.size(0), x.size(1), 1, x.size(3)))), 2)
+        # x12 = self.conv12(x_pad1)
+        #
+        # x_pad2 = torch.cat((x[:, :, :, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2), 1))), 3)
+        # x21 = self.conv21(x_pad2)
+        #
+        # x_pad3 = torch.cat((torch.cat((x[:, :, 1:, 1:], x.new_zeros((x.size(0), x.size(1), x.size(2) - 1, 1))), 3), x.new_zeros((x.size(0), x.size(1), 1, x.size(3)))), 2)
+        # x22 = self.conv22(x_pad3)
+
+        output = []
+        output.append(self.conv_list[0](x))
         conv_idx = 0
-        # for i in range(0, self.tile_size):
-        #     for j in range(0, self.tile_size):
-        #         feat = x_padding[:, :, i:x_padding.size(2) - (self.tile_size - i - 1),
-        #                j:x_padding.size(3) - (self.tile_size - j - 1)]
-        #         feat = self.convs[conv_idx](feat)
-        #         outs.append(feat)
+        for i in range(1, self.tile_size):
+            conv_idx += 1
+            x_pad = torch.cat((x[:, :, i:, :], x.new_zeros((x.size(0), x.size(1), i, x.size(3)))), 2)
+            output.append(self.conv_list[conv_idx](x_pad))
 
+        for i in range(1, self.tile_size):
+            conv_idx += 1
+            x_pad = torch.cat((x[:, :, :, i:], x.new_zeros((x.size(0), x.size(1), x.size(2), i))), 3)
+            output.append(self.conv_list[conv_idx](x_pad))
 
+        for j in range(1, self.tile_size):
+            for k in range(1, self.tile_size):
+                conv_idx += 1
+                x_pad = torch.cat((torch.cat((x[:, :, j:, k:], x.new_zeros((x.size(0), x.size(1), x.size(2) - j, k))),
+                                              3), x.new_zeros((x.size(0), x.size(1), j, x.size(3)))), 2)
+                output.append(self.conv_list[conv_idx](x_pad))
 
-        out_feat = torch.cat(outs, 1)
-        out_feat = self.conv_trans(out_feat)
-        return out_feat
+        feats = torch.cat(output, 1)
+        feats = self.trans_conv(feats)
+        # feats = self.conv2(feats)
+
+        return feats

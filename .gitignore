@@ -109,3 +109,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+!/src/lib/models/networks/fatnet_frn_tl_conv_multi_kernel_pred.py
