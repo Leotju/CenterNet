@@ -26,7 +26,7 @@ class TLConv(nn.Module):
         super(TLConv, self).__init__()
         # stride = stride * 2
         tile_chn = max(in_planes // (tile_size * tile_size), 1)
-        self.trans_conv = BasicConv(tile_chn * tile_size * tile_size, out_planes)
+        self.trans_conv = BasicConv(tile_chn * tile_size * tile_size, out_planes, 1, 1, 0)
 
         # self.conv11 = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
         #                         dilation=dilation, groups=groups, bias=bias)
