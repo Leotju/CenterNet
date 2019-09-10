@@ -40,7 +40,7 @@ class TLConv(nn.Module):
         self.tile_size = tile_size
         self.conv_list = nn.ModuleList()
         for i in range(tile_size * tile_size):
-            self.conv_list.append(BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=padding,
+            self.conv_list.append(BasicConv(in_planes, tile_chn, kernel_size=kernel_size, stride=stride, padding=padding,
                                 dilation=dilation, groups=groups, bias=bias))
 
     def forward(self, x):
