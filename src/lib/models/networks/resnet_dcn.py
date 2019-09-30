@@ -279,8 +279,8 @@ class PoseResNet(nn.Module):
 
         x = self.deconv_layers(x)
 
-        # x = self.glo_re(x)
-        x = self.glo_re_leo(x)
+        x = self.glo_re(x)
+        # x = self.glo_re_leo(x)
 
         ret = {}
         for head in self.heads:
