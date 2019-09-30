@@ -43,7 +43,7 @@ class GloReLeo(nn.Module):
         # B x N x Cr
         v = torch.matmul(b, xr)
         # B x N x N
-        Ag = self.ag(v)
+        Ag = self.ag(v).sigmoid()
         # B x N x N
         y = self.wg((v - Ag).permute(0, 2, 1)).permute(0, 2, 1)
         # B x N x N

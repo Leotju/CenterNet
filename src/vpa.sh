@@ -94,5 +94,9 @@ python main.py ctdet --arch fatnettlconvmultikernelpred --dataset pascal --gpus 
 python main.py ctdet --arch fatnetfrndcndlagcb --dataset pascal --gpus 1,2 --down_ratio 1 --input_res 96 --num_epochs 210 --lr_step 135,180 --wh_weight 0.02 --batch_size 128 --lr 5e-3 --exp_id fatnet_frn_dcn_dla_gcb_wh_002_d1_96_lr10x
 
 
+python main.py ctdet --exp_id pascal_resdcn18_384_glo_re --arch resdcn_18 --dataset pascal --num_epochs 70 --lr_step 45,60
+
+
+
 
 
