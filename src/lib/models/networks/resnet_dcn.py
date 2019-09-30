@@ -19,6 +19,7 @@ import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
 from mmcv.cnn import vgg
+from ..ops.GloRe import GloRe
 
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)
@@ -151,6 +152,8 @@ class PoseResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
 
+        self.glo_re = GloRe(in_channels=64)
+
         # used for deconv layers
         self.deconv_layers = self._make_deconv_layer(
             3,
@@ -275,10 +278,8 @@ class PoseResNet(nn.Module):
 
         x = self.deconv_layers(x)
 
-        # x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
-        # x = self.conv_s2(x)
-        # x = F.interpolate(x, scale_factor=2, mode='bilinear', align_corners = False)
-        # x = self.conv_s1(x)
+        x = self.glo_re(x)
+
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
