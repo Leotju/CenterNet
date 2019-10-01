@@ -20,7 +20,7 @@ from .DCNv2.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
 import torchvision
 from torchvision.models import VGG
-
+from ..ops.GloRe import GloRe
 BN_MOMENTUM = 0.1
 logger = logging.getLogger(__name__)
 
@@ -93,6 +93,8 @@ class PoseVGGNet(nn.Module):
             [256, 128, 64],
             [4, 4, 4],
         )
+
+        self.glo_re = GloRe(in_channels=64)
 
 
 
@@ -183,7 +185,7 @@ class PoseVGGNet(nn.Module):
 
         x = self.deconv_layers(x)
         # x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
-
+        x = self.glo_re(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
