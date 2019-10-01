@@ -17,8 +17,9 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
-from ..ops.tl_conv_v4 import TLConv
+from ..ops.tl_conv import TLConv
 from ..ops.basic_conv import BasicConv
+from ..ops.GloRe import GloRe
 BN_MOMENTUM = 0.1
 
 
@@ -91,7 +92,7 @@ class PosePangNet(nn.Module):
         # )
 
         self.trans_conv = BasicConv(128 + 64 +32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True, relu=True)
-
+        self.glo_re = GloRe(in_channels=128)
         self.dcn = nn.Sequential(
             DCN(128, 128, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(128, momentum=BN_MOMENTUM),
@@ -158,6 +159,7 @@ class PosePangNet(nn.Module):
                 output.append(x)
         x = torch.cat(output, 1)
         x = self.trans_conv(x)
+        x = self.glo_re(x)
         x = self.dcn(x)
         ret = {}
         for head in self.heads:
