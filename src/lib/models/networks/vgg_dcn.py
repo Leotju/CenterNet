@@ -182,7 +182,7 @@ class PoseVGGNet(nn.Module):
             #     import numpy as np
             #     np.save('/home/leo/Pictures/3/vgg/' + str(i) + '.npy', x.cpu().numpy())
         # x = self.features(x)
-        x = self.glo_re(x)
+        # x = self.glo_re(x)
         x = self.deconv_layers(x)
         # x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners = False)
 
