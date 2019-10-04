@@ -92,7 +92,15 @@ class PosePangNet(nn.Module):
         # )
 
         self.trans_conv = BasicConv(128 + 64 +32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True, relu=True)
-        self.glo_re = GloRe(in_channels=128)
+        self.glo_re_module = nn.ModuleList()
+        self.glo_re_module.append(GloRe(in_channels=32))
+        self.glo_re_module.append(GloRe(in_channels=64))
+        self.glo_re_module.append(GloRe(in_channels=128))
+        self.glo_re4 = GloRe(in_channels=64)
+
+
+
+
         self.dcn = nn.Sequential(
             DCN(128, 128, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
             nn.BatchNorm2d(128, momentum=BN_MOMENTUM),
@@ -153,14 +161,17 @@ class PosePangNet(nn.Module):
     def forward(self, x):
         index = [5, 9, 12]
         output = []
+        glo_re_id = 0
         for id, layer in enumerate(self.features):
             x = layer(x)
             if id in index:
+                x = self.glo_re_module[glo_re_id](x)
+                glo_re_id += 1
                 output.append(x)
         x = torch.cat(output, 1)
         x = self.trans_conv(x)
-        x = self.glo_re(x)
         x = self.dcn(x)
+        x = self.glo_re4(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
