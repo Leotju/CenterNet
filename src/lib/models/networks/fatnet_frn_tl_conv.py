@@ -20,8 +20,8 @@ from .DCNv2.dcn_v2 import DCN
 from ..ops.tl_conv import TLConv
 from ..ops.basic_conv import BasicConv
 from ..ops.GloRe import GloRe
-BN_MOMENTUM = 0.1
 
+BN_MOMENTUM = 0.1
 
 
 class Pang_unit(nn.Module):  #### basic unit
@@ -43,13 +43,14 @@ class Pang_unit(nn.Module):  #### basic unit
         x0 = x0 + x1
         return x0
 
+
 class Pang_unit_stride(nn.Module):  #### basic unit
     def __init__(self, cin, cout, bn, dilation):
         super(Pang_unit_stride, self).__init__()
         bias = False
 
         self.branch0 = TLConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
-                                 bias=bias)
+                              bias=bias)
         self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
         self.cin = cin
         self.cout = cout
@@ -61,6 +62,7 @@ class Pang_unit_stride(nn.Module):  #### basic unit
 
         x0 = x1 + x0
         return x0
+
 
 class PosePangNet(nn.Module):
 
@@ -74,7 +76,6 @@ class PosePangNet(nn.Module):
         self.conv1 = BasicConv(3, 16, kernel_size=7, stride=2, padding=3, bias=False, bn=True, relu=True)
 
         self.features = self._make_layers_pangnet(batch_norm=True)
-
 
         # self.dcn = nn.Sequential(
         #     DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
@@ -91,15 +92,13 @@ class PosePangNet(nn.Module):
         #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         # )
 
-        self.trans_conv = BasicConv(128 + 64 +32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True, relu=True)
+        self.trans_conv = BasicConv(128 + 64 + 32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True,
+                                    relu=True)
         self.glo_re_module = nn.ModuleList()
         self.glo_re_module.append(GloRe(in_channels=32))
         self.glo_re_module.append(GloRe(in_channels=64))
         self.glo_re_module.append(GloRe(in_channels=128))
         self.glo_re4 = GloRe(in_channels=64)
-
-
-
 
         self.dcn = nn.Sequential(
             DCN(128, 128, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
@@ -112,7 +111,6 @@ class PosePangNet(nn.Module):
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
-
 
         for head in sorted(self.heads):
             num_output = self.heads[head]
@@ -154,11 +152,12 @@ class PosePangNet(nn.Module):
             if ic <= 1:
                 layers.append(Pang_unit(in_channels, v, dilation=dilation[ic], bn=batch_norm))
             else:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation = dilation[ic]))
+                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=dilation[ic]))
             in_channels = v
         return layers
 
     def forward(self, x):
+        x = F.interpolate(x, scale_factor=0.25, mode='bilinear')
         index = [5, 9, 12]
         output = []
         glo_re_id = 0
