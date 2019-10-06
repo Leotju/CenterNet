@@ -11,7 +11,7 @@ import os
 import torch.utils.data as data
 
 
-class PascalVOC(data.Dataset):
+class PascalVOC07(data.Dataset):
     num_classes = 20
     default_resolution = [384, 384]
     mean = np.array([0.485, 0.456, 0.406],
@@ -20,10 +20,10 @@ class PascalVOC(data.Dataset):
                    dtype=np.float32).reshape(1, 1, 3)
 
     def __init__(self, opt, split):
-        super(PascalVOC, self).__init__()
+        super(PascalVOC07, self).__init__()
         self.data_dir = os.path.join(opt.data_dir, 'voc')
         self.img_dir = os.path.join(self.data_dir, 'images')
-        _ann_name = {'train': 'trainval0712', 'val': 'test2007'}
+        _ann_name = {'train': 'trainval07', 'val': 'test2007'}
         self.annot_path = os.path.join(
             self.data_dir, 'annotations',
             'pascal_{}.json').format(_ann_name[split])
