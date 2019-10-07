@@ -15,4 +15,4 @@ for img_id, img in enumerate(ann.imgs):
 ann_js['images'] = filter_imgs
 ann_js['annotations'] = filter_boxes
 
-json.dump(ann_js, open(os.path.join(coco_root, 'instances_tiny_train2017.json', 'w')))
+json.dump(ann_js, open(os.path.join(coco_root, 'instances_tiny_train2017.json'), 'w'))
