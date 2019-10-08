@@ -9,10 +9,11 @@ filter_imgs = []
 for img_id, img in enumerate(ann.imgs):
     if img_id < 5000:
         filter_imgs.append(ann.imgs[img])
-        boxes = ann.imgToAnns[img_id]
+        boxes = ann.imgToAnns[img]
         for box in boxes:
             filter_boxes.append(box)
 ann_js['images'] = filter_imgs
 ann_js['annotations'] = filter_boxes
 
 json.dump(ann_js, open(os.path.join(coco_root, 'instances_tiny_train2017.json'), 'w'))
+
