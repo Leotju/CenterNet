@@ -107,11 +107,13 @@ python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_r
 
 python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1,2,3 --down_ratio 2 --input_res 384 --num_epochs 70 --lr_step 45,60 --wh_weight 0.02 --exp_id resnet_18_dcn_d2_384
 
+python main.py ctdet --arch resdcn_18 --dataset pascal07 --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 70 --lr_step 45,60  --lr 1.25e-3 -exp_id resnet_18_dcn_384_10x_scratch_07
+
 python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1,2,3 --down_ratio 2 --input_res 384 --num_epochs 70 --lr_step 45,60 --exp_id resnet_18_dcn_d2_384
 
 python main.py ctdet --arch fatnetfrntlconv --dataset coco_tiny --gpus 0,1,2,3 --down_ratio 4 --input_res 384 --num_epochs 420 --lr_step 270,360 --batch_size 64 --lr 2.5e-3 --exp_id fatnet_frn_tl_conv_v3_lr10x_multi_5912_more_glo_re_pool4_coco_tiny
 
-python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 0.625e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_pascal
+python main.py ctdet --arch fatnetfrntlconv --dataset pascal07 --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 8 --lr 0.3125e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_pascal07
 
 
 sed -i "1254s/torch\.backends\.cudnn\.enabled/False/g" /home/leo/anaconda3/envs/fatdet/lib/python3.6/site-packages/torch/nn/functional.py
