@@ -24,46 +24,6 @@ from ..ops.GloRe import GloRe
 BN_MOMENTUM = 0.1
 
 
-class Pang_unit(nn.Module):  #### basic unit
-    def __init__(self, cin, cout, bn, dilation=1):
-        super(Pang_unit, self).__init__()
-        # if bn==True:
-        #     bias = False
-        # else:
-        #     bias = True
-        bias = True
-        self.branch0 = TLConv(cin, cout, kernel_size=3, stride=1, padding=1, bn=bn, bias=bias, dilation=dilation)
-        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
-        self.cin = cin
-        self.cout = cout
-
-    def forward(self, x):
-        x0 = self.branch0(x)
-        x1 = self.branch1(x)
-        x0 = x0 + x1
-        return x0
-
-
-class Pang_unit_stride(nn.Module):  #### basic unit
-    def __init__(self, cin, cout, bn, dilation):
-        super(Pang_unit_stride, self).__init__()
-        bias = False
-
-        self.branch0 = TLConv(cin, cout, kernel_size=3, stride=2, padding=dilation, dilation=dilation, bn=bn,
-                              bias=bias)
-        self.branch1 = BasicConv(cin, cout, kernel_size=1, stride=1, padding=0, bn=bn, bias=bias)
-        self.cin = cin
-        self.cout = cout
-
-    def forward(self, x):
-        x0 = self.branch0(x)
-        x0 = F.upsample_nearest(x0, scale_factor=2)
-        x1 = self.branch1(x)
-
-        x0 = x1 + x0
-        return x0
-
-
 class PosePangNet(nn.Module):
 
     def __init__(self, heads, head_conv, **kwargs):
@@ -77,28 +37,8 @@ class PosePangNet(nn.Module):
 
         self.features = self._make_layers_pangnet(batch_norm=True)
 
-        # self.dcn = nn.Sequential(
-        #     DCN(128, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-        #     nn.UpsamplingBilinear2d(scale_factor=2),
-        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-        #     DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-        #     nn.UpsamplingBilinear2d(scale_factor=2),
-        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-        #     DCN(64, 64, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
-        #     nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
-        #     nn.UpsamplingBilinear2d(scale_factor=2),
-        #     BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
-        # )
-
         self.trans_conv = BasicConv(128 + 64 + 32, 128, kernel_size=3, stride=1, padding=1, bias=False, bn=True,
                                     relu=True)
-        self.glo_re_module = nn.ModuleList()
-        self.glo_re_module.append(GloRe(in_channels=32))
-        self.glo_re_module.append(GloRe(in_channels=64))
-        self.glo_re_module.append(GloRe(in_channels=128))
-        self.glo_re4 = GloRe(in_channels=64)
 
         self.dcn = nn.Sequential(
             DCN(128, 128, kernel_size=(3, 3), stride=1, padding=1, dilation=1, deformable_groups=1),
@@ -126,9 +66,6 @@ class PosePangNet(nn.Module):
                 fc = nn.Sequential(
                     BasicConv(64, head_conv, kernel_size=3, padding=1, bias=True, bn=True, relu=True),
                     nn.Conv2d(head_conv, num_output, kernel_size=1, stride=1, padding=0))
-                # BasicConv(head_conv, num_output, kernel_size=1, padding=0, bias=True, bn=True, relu=False))
-
-
             else:
                 fc = nn.Conv2d(
                     in_channels=128,
@@ -146,31 +83,25 @@ class PosePangNet(nn.Module):
         in_channels = 3
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         dilation = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
-        tile_size = [1, 1, 3, 3, 3, 3, 7, 7, 7, 7, 15, 15, 15]
+        tile_size = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
         for ic, v in enumerate(cfg):
             v = v * 1
-            if ic <= 1:
-                layers.append(Pang_unit(in_channels, v, dilation=dilation[ic], bn=batch_norm))
-            else:
-                layers.append(Pang_unit_stride(in_channels, v, bn=batch_norm, dilation=dilation[ic]))
+            layers.append(TLConv(in_channels, v, 3, bn=batch_norm, dilation=dilation[ic], tile_size=tile_size[ic]))
             in_channels = v
         return layers
 
     def forward(self, x):
-        x = F.interpolate(x, scale_factor=0.25, mode='bilinear')
+        # x = F.interpolate(x, scale_factor=0.25, mode='bilinear')
+        x = F.max_pool2d(self.conv1(x), kernel_size=2, stride=2, padding=0)
         index = [5, 9, 12]
         output = []
-        glo_re_id = 0
         for id, layer in enumerate(self.features):
             x = layer(x)
             if id in index:
-                x = self.glo_re_module[glo_re_id](x)
-                glo_re_id += 1
                 output.append(x)
         x = torch.cat(output, 1)
         x = self.trans_conv(x)
         x = self.dcn(x)
-        x = self.glo_re4(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
