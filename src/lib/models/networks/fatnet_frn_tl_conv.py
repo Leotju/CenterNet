@@ -80,7 +80,7 @@ class PosePangNet(nn.Module):
 
     def _make_layers_pangnet(self, batch_norm=True):
         layers = nn.ModuleList()
-        in_channels = 3
+        in_channels = 16
         cfg = [16, 16, 32, 32, 32, 32, 64, 64, 64, 64, 128, 128, 128]
         dilation = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
         tile_size = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
