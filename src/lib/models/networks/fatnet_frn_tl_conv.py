@@ -86,7 +86,10 @@ class PosePangNet(nn.Module):
         tile_size = [1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 8, 8, 8]
         for ic, v in enumerate(cfg):
             v = v * 1
-            layers.append(TLConv(in_channels, v, 3, bn=batch_norm, dilation=dilation[ic], tl_size=tile_size[ic]))
+            if tile_size[ic] == 1:
+                layers.append(BasicConv(in_channels, v, 3, padding=1, stride=1, bn=batch_norm, dilation=dilation[ic]))
+            else:
+                layers.append(TLConv(in_channels, v, 3, bn=batch_norm, dilation=dilation[ic], tl_size=tile_size[ic]))
             in_channels = v
         return layers
 
