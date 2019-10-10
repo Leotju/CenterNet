@@ -111,7 +111,7 @@ python main.py ctdet --arch resdcn_18 --dataset pascal --gpus 0,1,2,3 --down_rat
 
 python main.py ctdet --arch fatnetfrntlconv --dataset coco_tiny --gpus 0,1,2,3 --down_ratio 4 --input_res 384 --num_epochs 420 --lr_step 270,360 --batch_size 64 --lr 2.5e-3 --exp_id fatnet_frn_tl_conv_v3_lr10x_multi_5912_more_glo_re_pool4_coco_tiny
 
-python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 32 --lr 1.25e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_pascal
+python main.py ctdet --arch fatnetfrntlconv --dataset pascal --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 16 --lr 0.625e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_pascal
 
 
 sed -i "1254s/torch\.backends\.cudnn\.enabled/False/g" /home/leo/anaconda3/envs/fatdet/lib/python3.6/site-packages/torch/nn/functional.py

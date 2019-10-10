@@ -41,7 +41,7 @@ class TLConv(nn.Module):
         for h in range(tl_size):
             for w in range(tl_size):
                 tl_conv = BasicConv(in_planes, out_planes, kernel_size=kernel_size, stride=tl_size,
-                                    padding=1, dilation=dilation, groups=groups, bias=bias,
+                                    padding=dilation, dilation=dilation, groups=groups, bias=bias,
                                     bn=bn,
                                     relu=relu)
                 self.tl_conv_list.append(tl_conv)
