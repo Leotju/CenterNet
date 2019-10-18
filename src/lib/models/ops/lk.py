@@ -20,8 +20,10 @@ from .basic_conv import BasicConv
 #         if self.relu is not None:
 #             x = self.relu(x)
 #         return x
+
 class LkConv(nn.Module):
     def __init__(self, in_planes, out_planes, kernel_size):
+        super(LkConv, self).__init__()
         self.conv1 = BasicConv(in_planes, in_planes // 2, 3, 1, 1)
         self.conv1 = BasicConv(in_planes, out_planes, 3, 1, 1)
         self.lk_v_conv = BasicConv(in_planes // 2, in_planes // 2, kernel_size=(kernel_size, 1),
