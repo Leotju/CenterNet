@@ -20,7 +20,7 @@ from .DCNv2.dcn_v2 import DCN
 from ..ops.tl_conv import TLConv
 from ..ops.basic_conv import BasicConv
 from ..ops.GloRe import GloRe
-
+from ..ops.lk import LkConv
 BN_MOMENTUM = 0.1
 
 
@@ -51,6 +51,9 @@ class PosePangNet(nn.Module):
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
+        self.lk = LkConv(64, 64, kernel_size=25)
+
+
 
         for head in sorted(self.heads):
             num_output = self.heads[head]
@@ -105,6 +108,7 @@ class PosePangNet(nn.Module):
         x = torch.cat(output, 1)
         x = self.trans_conv(x)
         x = self.dcn(x)
+        x = self.lk(x)
         ret = {}
         for head in self.heads:
             ret[head] = self.__getattr__(head)(x)
