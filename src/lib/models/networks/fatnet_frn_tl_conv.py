@@ -51,8 +51,8 @@ class PosePangNet(nn.Module):
             nn.BatchNorm2d(64, momentum=BN_MOMENTUM),
             BasicConv(64, 64, kernel_size=3, stride=1, padding=1),
         )
-        self.lk = LkConv(64, 64, kernel_size=25)
-
+        # self.lk = LkConv(64, 64, kernel_size=25)
+        self.lk = BasicConv(64, 64, kernel_size=11, dilation=2, padding=2)
 
 
         for head in sorted(self.heads):

@@ -117,6 +117,8 @@ python main.py ctdet --arch fatnetfrntlconv --dataset pascal07 --gpus 0,1 --down
 
 python main.py ctdet --arch fatnetfrntlconv --dataset pascal07 --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 8 --lr 0.3125e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_lk25_pascal07
 
+python main.py ctdet --arch fatnetfrntlconv --dataset pascal07 --gpus 0,1,2 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 12 --lr 0.46875e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_lk11_d2_pascal07
+
 python main.py ctdet --arch fatnetfrntlconv --dataset coco_tiny --gpus 0,1 --down_ratio 4 --input_res 384 --num_epochs 210 --lr_step 135,180 --batch_size 8 --lr 0.3125e-3 --exp_id fatnet_frn_tl_conv_lr10x_multi_5912_conv1pool_coco_tiny
 
 
