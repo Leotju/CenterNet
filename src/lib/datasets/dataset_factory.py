@@ -5,6 +5,7 @@ from __future__ import print_function
 from .sample.ddd import DddDataset
 from .sample.exdet import EXDetDataset
 from .sample.ctdet import CTDetDataset
+from .sample.ctdet_ms import CTDetDataset_ms
 from .sample.multi_pose import MultiPoseDataset
 
 from .dataset.coco import COCO
@@ -27,6 +28,7 @@ dataset_factory = {
 _sample_factory = {
   'exdet': EXDetDataset,
   'ctdet': CTDetDataset,
+  'ctdet_ms': CTDetDataset_ms,
   'ddd': DddDataset,
   'multi_pose': MultiPoseDataset
 }

@@ -15,9 +15,9 @@ from utils.oracle_utils import gen_oracle_map
 from .base_trainer import BaseTrainer
 
 
-class CtdetMSLoss(torch.nn.Module):
+class CtdetLoss(torch.nn.Module):
     def __init__(self, opt):
-        super(CtdetMSLoss, self).__init__()
+        super(CtdetLoss, self).__init__()
         self.crit = torch.nn.MSELoss() if opt.mse_loss else FocalLoss()
         self.crit_reg = RegL1Loss() if opt.reg_loss == 'l1' else \
             RegLoss() if opt.reg_loss == 'sl1' else None
@@ -28,75 +28,145 @@ class CtdetMSLoss(torch.nn.Module):
 
     def forward(self, outputs, batch):
         opt = self.opt
-        hm_loss_s4, wh_loss_s4, off_loss_s4 = 0, 0, 0
-        hm_loss_s8, wh_loss_s8, off_loss_s8 = 0, 0, 0
-        hm_loss_s16, wh_loss_s16, off_loss_s16 = 0, 0, 0
+        hm_s_loss, wh_s_loss, off_s_loss = 0, 0, 0
+        hm_m_loss, wh_m_loss, off_m_loss = 0, 0, 0
+        hm_l_loss, wh_l_loss, off_l_loss = 0, 0, 0
+        # hm_s32_loss, wh_s32_loss, off_s32_loss = 0, 0, 0
         for s in range(opt.num_stacks):
             output = outputs[s]
             if not opt.mse_loss:
-                output['hm_s4'] = _sigmoid(output['hm_s4'])
-                output['hm_s8'] = _sigmoid(output['hm_s8'])
-                output['hm_s16'] = _sigmoid(output['hm_s16'])
+                output['hm_s'] = _sigmoid(output['hm_s'])
+                output['hm_m'] = _sigmoid(output['hm_m'])
+                output['hm_l'] = _sigmoid(output['hm_l'])
+                # output['hm_s32'] = _sigmoid(output['hm_s32'])
 
             if opt.eval_oracle_hm:
-                output['hm'] = batch['hm']
+                output['hm_S'] = batch['hm_s']
+                output['hm_m'] = batch['hm_m']
+                output['hm_l'] = batch['hm_l']
+                # output['hm_s32'] = batch['hm_s32']
             if opt.eval_oracle_wh:
-                output['wh'] = torch.from_numpy(gen_oracle_map(
-                    batch['wh'].detach().cpu().numpy(),
+                output['wh_s'] = torch.from_numpy(gen_oracle_map(
+                    batch['wh_s'].detach().cpu().numpy(),
                     batch['ind'].detach().cpu().numpy(),
-                    output['wh'].shape[3], output['wh'].shape[2])).to(opt.device)
+                    output['wh_s'].shape[3], output['wh_s'].shape[2])).to(opt.device)
+                output['wh_m'] = torch.from_numpy(gen_oracle_map(
+                    batch['wh_m'].detach().cpu().numpy(),
+                    batch['ind_m'].detach().cpu().numpy(),
+                    output['wh_m'].shape[3], output['wh_m'].shape[2])).to(opt.device)
+                output['wh_l'] = torch.from_numpy(gen_oracle_map(
+                    batch['wh_l'].detach().cpu().numpy(),
+                    batch['ind_l'].detach().cpu().numpy(),
+                    output['wh_l'].shape[3], output['wh_l'].shape[2])).to(opt.device)
+                # output['wh_s32'] = torch.from_numpy(gen_oracle_map(
+                #   batch['wh_s32'].detach().cpu().numpy(),
+                #   batch['ind_s32'].detach().cpu().numpy(),
+                #   output['wh_s32'].shape[3], output['wh_s32'].shape[2])).to(opt.device)
             if opt.eval_oracle_offset:
                 output['reg'] = torch.from_numpy(gen_oracle_map(
-                    batch['reg'].detach().cpu().numpy(),
-                    batch['ind'].detach().cpu().numpy(),
-                    output['reg'].shape[3], output['reg'].shape[2])).to(opt.device)
+                    batch['reg_s'].detach().cpu().numpy(),
+                    batch['ind_s'].detach().cpu().numpy(),
+                    output['reg_s'].shape[3], output['reg_s'].shape[2])).to(opt.device)
+                output['reg_m'] = torch.from_numpy(gen_oracle_map(
+                    batch['reg_m'].detach().cpu().numpy(),
+                    batch['ind_m'].detach().cpu().numpy(),
+                    output['reg_m'].shape[3], output['reg_m'].shape[2])).to(opt.device)
+                output['reg_s16'] = torch.from_numpy(gen_oracle_map(
+                    batch['reg_l'].detach().cpu().numpy(),
+                    batch['ind_l'].detach().cpu().numpy(),
+                    output['reg_l'].shape[3], output['reg_l'].shape[2])).to(opt.device)
 
-            hm_loss_s4 += self.crit(output['hm_s4'], batch['hm']) / opt.num_stacks
-            hm_loss_s8 += self.crit(output['hm_s8'], batch['hm']) / opt.num_stacks
-            hm_loss_s16 += self.crit(output['hm_s16'], batch['hm']) / opt.num_stacks
+
+            hm_s_loss += self.crit(output['hm_s'], batch['hm_s']) / opt.num_stacks
+            hm_m_loss += self.crit(output['hm_m'], batch['hm_m']) / opt.num_stacks
+            hm_l_loss += self.crit(output['hm_l'], batch['hm_l']) / opt.num_stacks
+            # hm_s32_loss += self.crit(output['hm_s32'], batch['hm_s32']) / opt.num_stacks
 
             if opt.wh_weight > 0:
-                # if opt.dense_wh:
-                #     mask_weight = batch['dense_wh_mask'].sum() + 1e-4
-                #     wh_loss += (
-                #                        self.crit_wh(output['wh'] * batch['dense_wh_mask'],
-                #                                     batch['dense_wh'] * batch['dense_wh_mask']) /
-                #                        mask_weight) / opt.num_stacks
-                # elif opt.cat_spec_wh:
-                #     wh_loss += self.crit_wh(
-                #         output['wh'], batch['cat_spec_mask'],
-                #         batch['ind'], batch['cat_spec_wh']) / opt.num_stacks
-                # else:
-                wh_loss_s4 += self.crit_reg(output['wh_s4'], batch['reg_mask'], batch['ind'], batch['wh']) / opt.num_stacks
-                wh_loss_s8 += self.crit_reg(output['wh_s8'], batch['reg_mask'], batch['ind'], batch['wh']) / opt.num_stacks
-                wh_loss_s16 += self.crit_reg(output['wh_s16'], batch['reg_mask'], batch['ind'], batch['wh']) / opt.num_stacks
+                if opt.dense_wh:
+                    mask_weight = batch['dense_wh_mask'].sum() + 1e-4
+                    wh_s_loss += (
+                                       self.crit_wh(output['wh'] * batch['dense_wh_mask'],
+                                                    batch['dense_wh'] * batch['dense_wh_mask']) /
+                                       mask_weight) / opt.num_stacks
+
+                    mask_weight_s8 = batch['dense_wh_mask_s8'].sum() + 1e-4
+                    wh_m_loss += (
+                                          self.crit_wh(output['wh_s8'] * batch['dense_wh_mask_s8'],
+                                                       batch['dense_wh_s8'] * batch['dense_wh_mask_s8']) /
+                                          mask_weight_s8) / opt.num_stacks
+
+                elif opt.cat_spec_wh:
+                    wh_s_loss += self.crit_wh(
+                        output['wh_s'], batch['cat_spec_mask'],
+                        batch['ind_s'], batch['cat_spec_wh']) / opt.num_stacks
+
+                    wh_m_loss += self.crit_wh(
+                        output['wh_m'], batch['cat_spec_mask_s8'],
+                        batch['ind_m'], batch['cat_spec_wh_s8']) / opt.num_stacks
+                else:
+                    wh_s_loss += self.crit_reg(
+                        output['wh_s'], batch['reg_mask_s'],
+                        batch['ind_s'], batch['wh_s']) / opt.num_stacks
+
+                    wh_m_loss += self.crit_reg(
+                        output['wh_m'], batch['reg_mask_m'],
+                        batch['ind_m'], batch['wh_m']) / opt.num_stacks
+
+                    wh_l_loss += self.crit_reg(
+                        output['wh_l'], batch['reg_mask_l'],
+                        batch['ind_l'], batch['wh_l']) / opt.num_stacks
+
+                    # wh_s32_loss += self.crit_reg(
+                    #   output['wh_s32'], batch['reg_mask_s32'],
+                    #   batch['ind_s32'], batch['wh_s32']) / opt.num_stacks
 
             if opt.reg_offset and opt.off_weight > 0:
-                off_loss += self.crit_reg(output['reg'], batch['reg_mask'],
-                                          batch['ind'], batch['reg']) / opt.num_stacks
+                off_s_loss += self.crit_reg(output['reg_s'], batch['reg_mask_s'],
+                                          batch['ind_s'], batch['reg_s']) / opt.num_stacks
 
-        loss = opt.hm_weight * hm_loss + opt.wh_weight * wh_loss + \
-               opt.off_weight * off_loss
-        loss_stats = {'loss': loss, 'hm_loss': hm_loss,
-                      'wh_loss': wh_loss, 'off_loss': off_loss}
+                off_m_loss += self.crit_reg(output['reg_m'], batch['reg_mask_m'],
+                                             batch['ind_m'], batch['reg_m']) / opt.num_stacks
+
+                off_l_loss += self.crit_reg(output['reg_l'], batch['reg_mask_l'],
+                                              batch['ind_l'], batch['reg_l']) / opt.num_stacks
+
+                # off_s32_loss += self.crit_reg(output['reg_s32'], batch['reg_mask_s32'],
+                #                               batch['ind_s32'], batch['reg_s32']) / opt.num_stacks
+
+        loss = opt.hm_weight * hm_s_loss + opt.wh_weight * wh_s_loss + \
+               opt.off_weight * off_s_loss + opt.hm_weight * hm_m_loss + 2 * opt.wh_weight * wh_m_loss + \
+               opt.off_weight * off_m_loss + \
+               opt.hm_weight * hm_l_loss + 4 * opt.wh_weight * wh_l_loss + \
+               opt.off_weight * off_l_loss
+        # opt.hm_weight * hm_s32_loss + opt.wh_weight * wh_s32_loss + \
+        # opt.off_weight * off_s32_loss
+        loss_stats = {'loss': loss, 'hm_s_loss': hm_s_loss,
+                      'wh_s_loss': wh_s_loss, 'off_s_loss': off_s_loss,
+                      'hm_m_loss': hm_m_loss,
+                      'wh_m_loss': wh_m_loss, 'off_m_loss': off_m_loss,
+                      'hm_l_loss': hm_l_loss,
+                      'wh_l_loss': wh_l_loss, 'off_l_loss': off_l_loss,
+                      # 'hm_s32_loss': hm_s32_loss,
+                      # 'wh_s32_loss': wh_s32_loss, 'off_s32_loss': off_s32_loss
+                      }
         return loss, loss_stats
 
 
-class CtdetMSTrainer(BaseTrainer):
+class CtdetTrainer_ms(BaseTrainer):
     def __init__(self, opt, model, optimizer=None):
-        super(CtdetMSTrainer, self).__init__(opt, model, optimizer=optimizer)
+        super(CtdetTrainer_ms, self).__init__(opt, model, optimizer=optimizer)
 
     def _get_losses(self, opt):
-        loss_states = ['loss', 'hm_loss', 'wh_loss', 'off_loss']
+        loss_states = ['loss', 'hm_s_loss', 'wh_s_loss', 'off_s_loss', 'hm_m_loss', 'wh_m_loss', 'off_m_loss',
+                       'hm_l_loss', 'wh_l_loss', 'off_l_loss', ]
+        # 'hm_s32_loss', 'wh_s32_loss', 'off_s32_loss']
         loss = CtdetLoss(opt)
         return loss_states, loss
 
     def debug(self, batch, output, iter_id):
         opt = self.opt
-        reg_s16 = output['reg_s16'] if opt.reg_offset else None
-        reg_s4 = output['reg_s4'] if opt.reg_offset else None
-        reg_s8 = output['reg_s8'] if opt.reg_offset else None
-
+        reg = output['reg'] if opt.reg_offset else None
         dets = ctdet_decode(
             output['hm'], output['wh'], reg=reg,
             cat_spec_wh=opt.cat_spec_wh, K=opt.K)
