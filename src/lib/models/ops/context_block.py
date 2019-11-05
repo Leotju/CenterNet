@@ -1,5 +1,5 @@
 import torch
-from mmcv.cnn import constant_init, kaiming_init
+# from mmcv.cnn import constant_init, kaiming_init
 from torch import nn
 
 
