@@ -18,7 +18,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from .DCNv2.dcn_v2 import DCN
 import torch.utils.model_zoo as model_zoo
-from mmcv.cnn import vgg
+# from mmcv.cnn import vgg
 from ..ops.GloRe import GloRe
 from ..ops.GloRe_leo import GloReLeo
 BN_MOMENTUM = 0.1
