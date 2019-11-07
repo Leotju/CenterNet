@@ -26,15 +26,15 @@ class CtdetDetector_ms(BaseDetector):
     def process(self, images, return_time=False):
         with torch.no_grad():
             output = self.model(images)[-1]
-            hm = output['hm'].sigmoid_()
-            wh = output['wh']
-            reg = output['reg'] if self.opt.reg_offset else None
-            hm_s8 = output['hm_s8'].sigmoid_()
-            wh_s8 = output['wh_s8']
-            reg_s8 = output['reg_s8'] if self.opt.reg_offset else None
-            hm_s16 = output['hm_s16'].sigmoid_()
-            wh_s16 = output['wh_s16']
-            reg_s16 = output['reg_s16'] if self.opt.reg_offset else None
+            hm = output['hm_s'].sigmoid_()
+            wh = output['wh_s']
+            reg = output['reg_s'] if self.opt.reg_offset else None
+            hm_s8 = output['hm_m'].sigmoid_()
+            wh_s8 = output['wh_m']
+            reg_s8 = output['reg_m'] if self.opt.reg_offset else None
+            hm_s16 = output['hm_l'].sigmoid_()
+            wh_s16 = output['wh_l']
+            reg_s16 = output['reg_l'] if self.opt.reg_offset else None
             if self.opt.flip_test:
                 hm = (hm[0:1] + flip_tensor(hm[1:2])) / 2
                 wh = (wh[0:1] + flip_tensor(wh[1:2])) / 2
