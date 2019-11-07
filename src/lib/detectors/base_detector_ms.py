@@ -60,12 +60,12 @@ class BaseDetector(object):
             images = np.concatenate((images, images[:, :, :, ::-1]), axis=0)
         images = torch.from_numpy(images)
         meta = {'c': c, 's': s,
-                'out_height': inp_height // self.opt.down_ratio[0],
-                'out_width': inp_width // self.opt.down_ratio[0],
-                'out_height_s8': inp_height // self.opt.down_ratio[1],
-                'out_width_s8': inp_width // self.opt.down_ratio[1],
-                'out_height_s16': inp_height // self.opt.down_ratio[2],
-                'out_width_s16': inp_width // self.opt.down_ratio[2]}
+                'out_height': inp_height // self.opt.down_ratio,
+                'out_width': inp_width // self.opt.down_ratio,
+                'out_height_s8': inp_height // self.opt.down_ratio,
+                'out_width_s8': inp_width // self.opt.down_ratio,
+                'out_height_s16': inp_height // self.opt.down_ratio,
+                'out_width_s16': inp_width // self.opt.down_ratio}
         return images, meta
 
     def process(self, images, return_time=False):
