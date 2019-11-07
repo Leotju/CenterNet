@@ -118,7 +118,7 @@ class CtdetDetector_ms(BaseDetector):
             results[j] = np.concatenate(
                 [detection[j] for detection in detections], axis=0).astype(np.float32)
             # ---------s4, s8 -----------------
-            # soft_nms(results[j], Nt=0.5, method=2)
+            soft_nms(results[j], Nt=0.5, method=2)
             # ------------------------------------
             if len(self.scales) > 1 or self.opt.nms:
                 soft_nms(results[j], Nt=0.5, method=2)
